@@ -5,7 +5,6 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import logging
-from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 from ductor_bot.cli.process_registry import ProcessRegistry
@@ -61,33 +60,7 @@ def _capped_backoff(retry_count: int) -> int:
 
 def _config_changed(new: AgentConfig, old: AgentConfig) -> bool:
     """Detect meaningful config changes that require agent restart."""
-    if new.transport != old.transport:
-        return True
-    if new.transports != old.transports:
-        return True
-    return _TRANSPORT_IDENTITY_CHANGED.get(new.transport, _default_identity_check)(new, old)
-
-
-def _telegram_identity_check(new: AgentConfig, old: AgentConfig) -> bool:
     return new.telegram_token != old.telegram_token
-
-
-def _matrix_identity_check(new: AgentConfig, old: AgentConfig) -> bool:
-    return (
-        new.matrix.homeserver != old.matrix.homeserver or new.matrix.user_id != old.matrix.user_id
-    )
-
-
-def _default_identity_check(_new: AgentConfig, _old: AgentConfig) -> bool:
-    return False
-
-
-_IdentityCheck = Callable[[AgentConfig, AgentConfig], bool]
-
-_TRANSPORT_IDENTITY_CHANGED: dict[str, _IdentityCheck] = {
-    "telegram": _telegram_identity_check,
-    "matrix": _matrix_identity_check,
-}
 
 
 class AgentSupervisor:

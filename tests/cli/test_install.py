@@ -49,18 +49,14 @@ class TestCmdInstall:
 
     def test_valid_extra_calls_install(self) -> None:
         with patch("ductor_bot.cli_commands.install._install_extra") as mock_install:
-            cmd_install(["install", "matrix"])
-            mock_install.assert_called_once_with("matrix")
+            cmd_install(["install", "api"])
+            mock_install.assert_called_once_with("api")
 
     def test_valid_extra_api_calls_install(self) -> None:
         with patch("ductor_bot.cli_commands.install._install_extra") as mock_install:
             cmd_install(["install", "api"])
             mock_install.assert_called_once_with("api")
 
-    def test_valid_extra_slack_calls_install(self) -> None:
-        with patch("ductor_bot.cli_commands.install._install_extra") as mock_install:
-            cmd_install(["install", "slack"])
-            mock_install.assert_called_once_with("slack")
 
 
 class TestInstallExtra:
@@ -70,7 +66,7 @@ class TestInstallExtra:
         with patch("ductor_bot.cli_commands.install._is_installed", return_value=True):
             console = MagicMock()
             with patch("ductor_bot.cli_commands.install.Console", return_value=console):
-                _install_extra("matrix")
+                _install_extra("api")
             # Should mention "already installed"
             call_args = console.print.call_args_list
             assert any("already installed" in str(c) for c in call_args)
@@ -80,7 +76,7 @@ class TestInstallExtra:
         with patch("ductor_bot.cli_commands.install.Console", return_value=console):
             _install_extra("bogus")
         call_args = console.print.call_args_list
-        assert any("Unknown extra" in str(c) for c in call_args)
+        assert any("未知的可选依赖" in str(c) for c in call_args)
 
     def test_not_installed_runs_subprocess_pip(self) -> None:
         with (
@@ -93,10 +89,10 @@ class TestInstallExtra:
             patch("ductor_bot.cli_commands.install.Console", return_value=MagicMock()),
         ):
             mock_run.return_value = MagicMock(returncode=0, stderr="")
-            _install_extra("matrix")
+            _install_extra("api")
             mock_run.assert_called_once()
             cmd = mock_run.call_args[0][0]
-            assert "ductor[matrix]" in cmd
+            assert "ductor[api]" in cmd
 
     def test_not_installed_runs_subprocess_pipx(self) -> None:
         with (
@@ -126,11 +122,11 @@ class TestInstallExtra:
             patch("ductor_bot.cli_commands.install.Console", return_value=MagicMock()),
         ):
             mock_run.return_value = MagicMock(returncode=0, stderr="")
-            _install_extra("matrix")
+            _install_extra("api")
             mock_run.assert_called_once()
             cmd = mock_run.call_args[0][0]
             assert "-e" in cmd
-            assert ".[matrix]" in cmd
+            assert ".[api]" in cmd
 
     def test_failed_install_shows_error(self) -> None:
         with (
@@ -143,6 +139,6 @@ class TestInstallExtra:
             patch("ductor_bot.cli_commands.install.Console", return_value=MagicMock()) as console,
         ):
             mock_run.return_value = MagicMock(returncode=1, stderr="some error")
-            _install_extra("matrix")
+            _install_extra("api")
             call_args = console.return_value.print.call_args_list
             assert any("Installation failed" in str(c) for c in call_args)

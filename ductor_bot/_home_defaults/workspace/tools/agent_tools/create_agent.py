@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create a new sub-agent by writing to agents.json.
+"""创建 Telegram 子智能体 by writing to agents.json.
 
 The AgentSupervisor watches agents.json via FileWatcher and automatically
 starts the new agent within seconds.
@@ -7,17 +7,12 @@ starts the new agent within seconds.
 Usage (Telegram):
     python3 create_agent.py --name NAME --token TOKEN --users ID1,ID2 [--provider P] [--model M]
 
-Usage (Matrix):
-    python3 create_agent.py --name NAME --transport matrix \
-        --homeserver URL --user-id @bot:server \
-        --allowed-users @user:server [--password PASS] [--provider P] [--model M]
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -132,177 +127,51 @@ def _resolve_model(provider: str | None, model: str | None) -> str | None:
     return model
 
 
-_MATRIX_USER_RE = re.compile(r"^@[a-z0-9._=/+-]+:[a-z0-9.-]+$", re.IGNORECASE)
-
-
-def _validate_matrix_user_id(user_id: str) -> bool:
-    """Validate Matrix user ID format (@localpart:domain)."""
-    return bool(_MATRIX_USER_RE.match(user_id))
-
-
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Create a new sub-agent")
-    parser.add_argument("--name", required=True, help="Agent name (lowercase, no spaces)")
-    parser.add_argument(
-        "--transport",
-        choices=("telegram", "matrix"),
-        default=None,
-        help="Transport type (default: auto-detect from other flags)",
-    )
-
+    parser = argparse.ArgumentParser(description="创建 Telegram 子智能体")
+    parser.add_argument("--name", required=True, help="智能体名称（小写且不含空格）")
+    parser.add_argument("--transport", choices=("telegram",), default="telegram")
     # Telegram-specific
-    parser.add_argument("--token", default=None, help="Telegram bot token")
+    parser.add_argument("--token", default=None, help="Telegram Bot Token")
     parser.add_argument(
-        "--users", default=None, help="Comma-separated Telegram user IDs (integers)"
-    )
-
-    # Matrix-specific
-    parser.add_argument("--homeserver", default=None, help="Matrix homeserver URL (https://...)")
-    parser.add_argument("--user-id", default=None, help="Matrix bot user ID (@bot:server)")
-    parser.add_argument(
-        "--password",
-        default=None,
-        help="Matrix account password (optional; needed for first login if no access_token)",
-    )
-    parser.add_argument(
-        "--allowed-users",
-        default=None,
-        help="Comma-separated Matrix user IDs (@user:server,...)",
-    )
-    parser.add_argument(
-        "--allowed-rooms",
-        default=None,
-        help="Comma-separated Matrix room IDs or aliases (!id:server or #alias:server)",
+        "--users", default=None, help="以逗号分隔的 Telegram 数字用户 ID"
     )
 
     # Common
     parser.add_argument(
         "--provider",
         default=None,
-        help="AI provider (claude/openai/gemini/antigravity)",
+        help="模型提供商（claude/openai/gemini/antigravity）",
     )
     parser.add_argument(
         "--model",
         default=None,
-        help="Specific model name (e.g. gpt-5.5, opus, gemini-2.5-pro)",
+        help="具体模型名称，例如 gpt-5.5、opus、gemini-2.5-pro",
     )
     parser.add_argument(
         "--description",
         default=None,
-        help="Short agent description for the join notification (purpose, key commands)",
+        help="加入通知中显示的简短智能体说明",
     )
     args = parser.parse_args()
-
-    # --- Detect transport ---
-    transport = args.transport
-    if transport is None:
-        if args.homeserver or args.user_id:
-            transport = "matrix"
-        elif args.token:
-            transport = "telegram"
-        else:
-            print(
-                "Error: Specify --transport or provide --token (Telegram) / --homeserver (Matrix).",
-                file=sys.stderr,
-            )
-            sys.exit(1)
 
     # --- Validate name ---
     name = args.name.lower().strip()
     if not name or " " in name or name == "main":
         print(
-            f"Error: Invalid agent name '{name}'. Must be lowercase, no spaces, not 'main'.",
+            f"错误：无效的智能体名称 '{name}'. 名称必须小写、不含空格，且不能为 main。",
             file=sys.stderr,
         )
         sys.exit(1)
 
-    # --- Transport-specific validation ---
-    if transport == "telegram":
-        # Reject Matrix-only flags
-        for flag, label in [
-            (args.homeserver, "--homeserver"),
-            (args.user_id, "--user-id"),
-            (args.password, "--password"),
-            (args.allowed_users, "--allowed-users"),
-            (args.allowed_rooms, "--allowed-rooms"),
-        ]:
-            if flag:
-                print(f"Error: {label} is only valid with --transport matrix.", file=sys.stderr)
-                sys.exit(1)
-
-        if not args.token:
-            print("Error: --token is required for Telegram agents.", file=sys.stderr)
-            sys.exit(1)
-        if not args.users:
-            print("Error: --users is required for Telegram agents.", file=sys.stderr)
-            sys.exit(1)
-
-        try:
-            user_ids = [int(uid.strip()) for uid in args.users.split(",") if uid.strip()]
-        except ValueError:
-            print("Error: Telegram user IDs must be integers.", file=sys.stderr)
-            sys.exit(1)
-        if not user_ids:
-            print("Error: At least one user ID is required.", file=sys.stderr)
-            sys.exit(1)
-
-    else:  # matrix
-        # Reject Telegram-only flags
-        if args.token:
-            print("Error: --token is only valid with --transport telegram.", file=sys.stderr)
-            sys.exit(1)
-        if args.users:
-            print(
-                "Error: --users is for Telegram (integers). Use --allowed-users for Matrix.",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-
-        if not args.homeserver:
-            print("Error: --homeserver is required for Matrix agents.", file=sys.stderr)
-            sys.exit(1)
-        if not args.homeserver.startswith("https://"):
-            print("Error: --homeserver must be an HTTPS URL.", file=sys.stderr)
-            sys.exit(1)
-        if not args.user_id:
-            print("Error: --user-id is required for Matrix agents.", file=sys.stderr)
-            sys.exit(1)
-        if not _validate_matrix_user_id(args.user_id):
-            print(
-                f"Error: Invalid Matrix user ID '{args.user_id}'. Expected format: @localpart:domain",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-
-        # Parse allowed users
-        matrix_allowed_users: list[str] = []
-        if args.allowed_users:
-            for uid in args.allowed_users.split(","):
-                uid = uid.strip()
-                if not uid:
-                    continue
-                if not _validate_matrix_user_id(uid):
-                    print(
-                        f"Error: Invalid Matrix user ID '{uid}'. Expected format: @localpart:domain",
-                        file=sys.stderr,
-                    )
-                    sys.exit(1)
-                matrix_allowed_users.append(uid)
-
-        # Parse allowed rooms
-        matrix_allowed_rooms: list[str] = []
-        if args.allowed_rooms:
-            for rid in args.allowed_rooms.split(","):
-                rid = rid.strip()
-                if not rid:
-                    continue
-                if not rid.startswith(("!", "#")):
-                    print(
-                        f"Error: Invalid room ID '{rid}'. Must start with '!' (room ID) or '#' (alias).",
-                        file=sys.stderr,
-                    )
-                    sys.exit(1)
-                matrix_allowed_rooms.append(rid)
+    if not args.token or not args.users:
+        parser.error("Telegram 子智能体需要 --token 和 --users")
+    try:
+        user_ids = [int(uid.strip()) for uid in args.users.split(",") if uid.strip()]
+    except ValueError:
+        parser.error("Telegram 用户 ID 必须是整数")
+    if not user_ids:
+        parser.error("至少需要一个用户 ID")
 
     # --- Load existing agents ---
     path = _agents_path()
@@ -315,7 +184,7 @@ def main() -> None:
 
     # Check for duplicate
     if any(a.get("name") == name for a in agents):
-        print(f"Error: Agent '{name}' already exists.", file=sys.stderr)
+        print(f"错误：智能体 '{name}' 已存在。", file=sys.stderr)
         sys.exit(1)
 
     # Normalize provider name (codex -> openai)
@@ -326,28 +195,13 @@ def main() -> None:
     # Resolve model against cached model lists
     resolved_model = _resolve_model(provider, args.model)
 
-    # --- Build agent entry ---
-    if transport == "telegram":
-        entry: dict = {
-            "name": name,
-            "telegram_token": args.token,
-            "allowed_user_ids": user_ids,
-        }
-    else:  # matrix
-        matrix_cfg: dict[str, object] = {
-            "homeserver": args.homeserver,
-            "user_id": args.user_id,
-            "allowed_rooms": matrix_allowed_rooms,
-            "allowed_users": matrix_allowed_users,
-            "store_path": "matrix_store",
-        }
-        if args.password:
-            matrix_cfg["password"] = args.password
-        entry = {
-            "name": name,
-            "transport": "matrix",
-            "matrix": matrix_cfg,
-        }
+    # --- Build Telegram agent entry ---
+    entry: dict = {
+        "name": name,
+        "transport": "telegram",
+        "telegram_token": args.token,
+        "allowed_user_ids": user_ids,
+    }
 
     if provider:
         entry["provider"] = provider
@@ -369,36 +223,13 @@ def main() -> None:
         print(f"  JOIN_NOTIFICATION.md written.")
 
     # --- Output ---
-    print(f"Agent '{name}' created successfully.")
-    print(f"  Transport: {transport}")
-    if transport == "telegram":
-        print(f"  Token: {args.token[:8]}...")
-        print(f"  Users: {user_ids}")
-    else:
-        print(f"  Homeserver: {args.homeserver}")
-        print(f"  User ID: {args.user_id}")
-        if args.password:
-            print(f"  Password: configured")
-        else:
-            print(f"  Password: NOT SET — add to agents.json before starting")
-        if matrix_allowed_users:
-            print(f"  Allowed users: {matrix_allowed_users}")
-        if matrix_allowed_rooms:
-            print(f"  Allowed rooms: {matrix_allowed_rooms}")
+    print(f"子智能体 '{name}' 已创建。")
+    print(f"  Telegram 用户：{user_ids}")
     if provider:
-        print(f"  Provider: {provider}")
+        print(f"  提供商：{provider}")
     if resolved_model:
-        print(f"  Model: {resolved_model}")
-    print(f"\nThe agent starts automatically within a few seconds.")
-    if transport == "telegram":
-        print(f"The user can open the sub-agent's bot chat in Telegram to talk to it directly.")
-    else:
-        print(f"The user can message the bot at {args.user_id} in Matrix.")
-        if not args.password:
-            print(
-                "\nWARNING: No --password provided. The agent needs either a password or "
-                "an access_token in agents.json to log in. Add it before the agent starts."
-            )
+        print(f"  模型：{resolved_model}")
+    print("智能体将在数秒内自动启动；用户可直接打开它的 Telegram 聊天。")
 
 
 if __name__ == "__main__":

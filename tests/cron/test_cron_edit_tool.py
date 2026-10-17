@@ -239,13 +239,13 @@ def test_cron_edit_redirects_destination(tmp_path: Path) -> None:
     result = _run(
         tmp_path,
         TOOL_EDIT,
-        ["route-job", "--chat-id", "555", "--topic-id", "42", "--transport", "mx"],
+        ["route-job", "--chat-id", "555", "--topic-id", "42", "--transport", "tg"],
     )
     assert result.returncode == 0
     job = _job(tmp_path, "route-job")
     assert job["chat_id"] == 555
     assert job["topic_id"] == 42
-    assert job["transport"] == "mx"
+    assert job["transport"] == "tg"
 
 
 def test_cron_edit_clear_topic_id_routes_to_main_thread(tmp_path: Path) -> None:

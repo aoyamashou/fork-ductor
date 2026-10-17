@@ -8,6 +8,13 @@ from unittest.mock import patch
 import pytest
 
 from ductor_bot.config import reset_antigravity_models, reset_gemini_models
+from ductor_bot.i18n import init as init_i18n
+
+
+@pytest.fixture(autouse=True)
+def _reset_locale() -> None:
+    """Keep language choices in one test from affecting later tests."""
+    init_i18n("en")
 
 
 @pytest.fixture(autouse=True)
@@ -61,7 +68,7 @@ def _no_real_process_signals() -> object:
 
 @pytest.fixture(autouse=True)
 def _no_real_service_management() -> object:
-    """Prevent tests from stopping/starting the real systemd service.
+    """Prevent tests from stopping/starting the real launchd service.
 
     ``lifecycle.stop_bot()`` calls ``_stop_service_if_running()`` which runs
     ``systemctl --user stop ductor.service`` — killing the live service on any

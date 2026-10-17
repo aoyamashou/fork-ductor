@@ -23,6 +23,7 @@ _store: TranslationStore | None = None
 
 # Available languages: directory name -> display name (native).
 LANGUAGES: dict[str, str] = {
+    "zh-CN": "简体中文",
     "en": "English",
     "de": "Deutsch",
     "nl": "Nederlands",
@@ -46,7 +47,7 @@ def init(language: str = "en") -> None:
 
 def _get_store() -> TranslationStore:
     if _store is None:
-        # Auto-init with English if nobody called init() yet.
+        # Library calls without application setup keep the source locale.
         init("en")
         assert _store is not None
     return _store

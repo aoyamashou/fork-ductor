@@ -1,0 +1,212 @@
+# 简体中文界面文案
+
+[status]
+running = "[bold green]运行中[/bold green]  PID={pid}  已运行 {uptime}"
+not_running = "[dim]未运行[/dim]"
+provider = "提供商：[cyan]{provider}[/cyan]（{model}）"
+docker_enabled = "Docker：[green]已启用[/green]（{name}）"
+docker_disabled = "Docker：[dim]未启用[/dim]"
+errors_found = "最近日志中的错误：[bold red]{count}[/bold red] 条"
+errors_none = "错误：[green]0[/green] 条"
+paths_header = "[bold]文件路径：[/bold]"
+not_configured = "[bold yellow]未配置。[/bold yellow]\n\n运行 [bold]ductor[/bold] 以启动设置向导。"
+
+[config]
+incomplete = "[bold yellow]配置不完整，请运行 ductor onboarding。[/bold yellow]"
+onboarding_hint = "运行 [bold]ductor onboarding[/bold] 进行重新配置。"
+
+[lifecycle]
+stopping_docker = "[dim]停止 Docker 容器“{name}”...[/dim]"
+docker_stopped = "[green]Docker 容器已停止。[/green]"
+stopping_bot = "[dim]正在停止机器人（PID={pid}）...[/dim]"
+bot_stopped = "[green]机器人已停止。[/green]"
+killed_extra = "[dim]已停止剩余的 {count} 个 ductor 进程。[/dim]"
+no_instance = "[dim]没有正在运行的机器人。[/dim]"
+
+[lifecycle.uninstall]
+title = "[bold red]卸载 ductor[/bold red]"
+body = "[bold red]这将从系统中永久删除 ductor。[/bold red]\n\n  1. 停止运行中的机器人\n  2. 删除 Docker 容器和镜像（如已启用）\n  3. 删除 ~/.ductor/ 中的所有数据\n  4. 卸载 ductor 软件包"
+confirm = "您确定要卸载所有内容吗？"
+cancelled = "[dim]卸载已取消。[/dim]"
+removing_image = "[dim]正在删除 Docker 映像“{image}”...[/dim]"
+image_removed = "[green]Docker 镜像已删除。[/green]"
+uninstalling = "[dim]正在卸载 ductor 软件包...[/dim]"
+delete_warning = "[yellow]警告：无法完全删除 {home}（部分文件可能被占用），请手动清理。[/yellow]"
+deleted = "[green]已删除 {home}[/green]"
+done_title = "[bold green]再见[/bold green]"
+done_body = "[bold green]ductor 已完全移除。[/bold green]\n\n感谢使用 ductor！"
+
+[lifecycle.upgrade]
+dev_title = "[bold yellow]开发安装[/bold yellow]"
+dev_body = "[bold yellow]当前为源码开发安装。[/bold yellow]\n\n无法自动升级。请在项目目录运行 [bold]git pull[/bold]。"
+title = "[bold cyan]正在升级 ductor...[/bold cyan]"
+body = "1. 停止运行中的机器人\n  2. 升级到最新版本\n  3. 重新启动"
+upgrading = "[dim]升级包...[/dim]"
+complete = "[green]升级完成：{old} -> {new}[/green]"
+unchanged = "[bold yellow]升级后版本仍为 {version}。[/bold yellow]\n已尝试自动重试，但无法确认新版本已安装。"
+restarting = "[dim]正在重启...[/dim]"
+
+[docker]
+config_not_found = "[bold red]找不到配置，请先运行 ductor。[/bold red]"
+config_read_error = "[bold red]读取配置失败。[/bold red]"
+enabled = "Docker 沙箱：[green]已启用[/green]"
+disabled = "Docker 沙箱：[dim]未启用[/dim]"
+restart_hint = "[dim]重启机器人即可应用。[/dim]"
+
+[docker.rebuild]
+stopping = "[dim]停止机器人...[/dim]"
+removing_container = "[dim]正在删除容器“{name}”...[/dim]"
+removing_image = "[dim]正在删除镜像“{name}”...[/dim]"
+done = "[green]完成。[/green]下次启动机器人时将重新构建镜像。"
+
+[docker.mount]
+usage = "[bold red]用法：ductor docker mount <路径>[/bold red]"
+not_exist = "[bold red]路径不存在：{path}[/bold red]"
+not_dir = "[bold red]不是目录：{path}[/bold red]"
+already = "[dim]已安装：{path}[/dim]"
+done = "[green]已挂载：[/green] {path}{target}"
+apply_hint = "[dim]重启机器人或重建容器后生效。[/dim]"
+
+[docker.unmount]
+usage = "[bold red]用法：ductor docker unmount <路径>[/bold red]"
+not_found = "[bold red]找不到挂载目录：{path}[/bold red]"
+done = "[green]已取消挂载：[/green] {path}"
+
+[docker.mounts]
+empty = "[dim]尚未配置挂载目录。[/dim]"
+add_hint = "[dim]用 ductor docker mount <path> 添加挂载目录。[/dim]"
+
+[docker.extras]
+col_package = "软件包"
+col_description = "用途"
+col_status = "状态"
+selected = "[green]已选[/green]"
+not_selected = "[dim]—[/dim]"
+apply_hint = "[dim]运行 ductor docker rebuild 以安装所选软件包。[/dim]"
+add_hint = "[dim]用 ductor docker extras-add <id> 添加软件包。[/dim]"
+remove_hint = "[dim]用 ductor docker extras-remove <id> 移除软件包。[/dim]"
+usage_add = "[bold red]用法：ductor docker extras-add <id>[/bold red]"
+usage_remove = "[bold red]用法：ductor docker extras-remove <id>[/bold red]"
+see_ids = "[dim]运行 ductor docker extras 查看可用 ID。[/dim]"
+see_installed = "[dim]运行 ductor docker extras 查看已安装 ID。[/dim]"
+unknown = "[bold red]未知的额外软件包：{id}[/bold red]"
+already_installed = "[dim]已安装：{id}[/dim]"
+not_installed = "[bold red]未安装：{id}[/bold red]"
+added = "[green]添加：[/green] {names}"
+auto_deps = "[dim]自动添加依赖项：{names}[/dim]"
+removed = "[green]已删除：[/green] {name}"
+rebuild_hint = "[yellow]运行 ductor docker rebuild 以应用更改。[/yellow]"
+dep_warning = "[yellow]警告：{dependents} 依赖于 {name}.[/yellow]"
+
+[service]
+not_installed = "[dim]后台服务未安装。运行 ductor service install。[/dim]"
+not_running = "[dim]服务未运行。[/dim]"
+no_service = "[dim]未安装服务。[/dim]"
+no_binary = "[bold red]在 PATH 中找不到 ductor 命令。[/bold red]"
+removed = "[green]服务已删除。[/green]"
+started = "[green]服务已启动。[/green]"
+stopped = "[green]服务已停止。[/green]"
+start_failed = "[red]启动失败：{error}[/red]"
+stop_failed = "[red]停止失败：{error}[/red]"
+
+[service.install]
+title = "ductor 后台服务"
+body = "[bold green]ductor 已作为后台服务运行。[/bold green]\n\n{detail}\n\n[bold]常用命令：[/bold]\n\n  ductor service status：查看状态\n  ductor service stop：停止服务\n  ductor service logs：{logs_hint}\n  ductor service uninstall：卸载服务"
+
+[service.macos]
+no_launchctl = "[bold red]找不到 launchctl，无法安装 macOS 后台服务。[/bold red]"
+start_failed = "[bold red]加载 Launch Agent 失败：[/bold red] {error}"
+detail = "登录后自动启动；异常退出后重新启动。"
+unload_failed = "[red]卸载 Launch Agent 失败：{error}[/red]"
+not_loaded = "[red]Launch Agent 未加载，请运行 ductor service install。[/red]"
+
+[service.logs]
+no_logs = "[dim]未找到日志文件。[/dim]"
+showing = "[dim]正在显示 {name} 的最后 {count} 行[/dim]"
+read_error = "[red]无法读取日志文件：{error}[/red]"
+full_path = "[dim]完整日志：{path}[/dim]"
+not_installed = "[dim]服务未安装。[/dim]"
+streaming = "[dim]显示日志（Ctrl+C 停止）...[/dim]"
+no_journalctl = "[bold red]journalctl 未找到。[/bold red]"
+
+[api]
+title = "[bold]API 命令[/bold] [dim]（测试版）[/dim]"
+status_not_configured = "[dim]未配置[/dim]"
+status_enabled = "[green]已启用[/green]（端口 {port}）"
+status_disabled = "[dim]已关闭[/dim]"
+
+[api.missing_dep]
+title = "[bold]缺少依赖[/bold]"
+body = "API 服务器需要 [bold yellow]PyNaCl[/bold yellow] 提供端到端加密。\n\n请运行：\n\n  [bold]{hint}[/bold]\n\n然后重新执行 [bold]ductor api enable[/bold]。"
+
+[api.enabled]
+title = "[bold]API 服务器[/bold] [dim]（测试版）[/dim]"
+body = "[bold green]API 服务器已启用。[/bold green]\n\n  主机：[cyan]{host}[/cyan]\n  端口：[cyan]{port}[/cyan]\n  令牌：[cyan]{token}[/cyan]\n\n[dim]重启机器人后生效。[/dim]\n[dim]建议通过 Tailscale 或其他专用网络连接。[/dim]"
+
+[api.disabled]
+status = "API 服务器：[dim]已关闭[/dim]"
+
+[agents]
+col_agent = "智能体"
+col_status = "状态"
+col_uptime = "运行时间"
+col_provider = "提供商"
+col_model = "模型"
+status_running = "[bold green]运行中[/bold green]"
+status_starting = "[yellow]启动中[/yellow]"
+status_crashed = "[bold red]异常退出[/bold red]"
+status_stopped = "[dim]已停止[/dim]"
+empty = "[dim]未配置子智能体。[/dim]"
+add_hint = "[dim]用 ductor agents add <name> 创建子智能体。[/dim]"
+
+[agents.add]
+usage = "[bold red]用法：ductor agents add <name>[/bold red]"
+reserved = "[bold red]名称“main”被保留。[/bold red]"
+exists = "[bold red]智能体“{name}”已存在。[/bold red]"
+prompt_token = "“{name}”的 Telegram 机器人令牌："
+prompt_users = "允许的用户 ID（以逗号分隔）："
+prompt_groups = "允许的组 ID（以逗号分隔，如果没有则留空）："
+prompt_provider = "提供商："
+prompt_model = "模型（例如 opus、sonnet、o3）："
+cancelled = "[dim]已取消.[/dim]"
+done = "[green]已将智能体“{name}”添加到 agents.json。[/green]"
+auto_start = "[dim]它将在下次机器人（重新）启动时自动启动。[/dim]"
+
+[agents.remove]
+usage = "[bold red]用法：ductor agents remove <name>[/bold red]"
+not_found = "[bold red]找不到智能体“{name}”。[/bold red]"
+confirm = "删除智能体“{name}”？ （这不会删除其工作区数据。）"
+done = "[green]已从 agents.json 中移除智能体“{name}”。[/green]"
+data_hint = "[dim]工作区数据保留在 {path}[/dim]"
+
+[install]
+already = "[green]✓[/green] {description} 已安装。"
+installing = "正在安装 {description}..."
+command = "[dim]$ {cmd}[/dim]"
+done = "[green]✓[/green] {description} 安装成功。"
+failed = "[red]✗[/red] 安装失败。"
+col_extra = "可选依赖"
+col_description = "说明"
+col_status = "状态"
+status_installed = "[green]已安装[/green]"
+status_not_installed = "[dim]未安装[/dim]"
+
+[help]
+col_command = "命令"
+col_description = "说明"
+ductor = "启动机器人；未配置时打开向导"
+onboarding = "运行首次配置向导"
+stop = "停止机器人和 Docker 容器"
+restart = "重启机器人"
+reset = "清除配置并重新设置"
+upgrade = "升级并重启"
+uninstall = "移除程序与本地数据"
+service_install = "安装后台服务（{hint}）"
+service = "管理后台服务"
+agents = "管理子智能体"
+docker = "管理 Docker 沙箱"
+api = "管理加密 WebSocket API"
+install = "安装可选 API 依赖"
+status = "查看机器人状态与路径"
+help = "显示此帮助"
+verbose = "显示详细日志"

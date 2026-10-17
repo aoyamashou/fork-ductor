@@ -38,8 +38,8 @@ def print_api_help() -> None:
     table = Table(show_header=False, box=None, padding=(0, 2))
     table.add_column(style="bold green", min_width=30)
     table.add_column()
-    table.add_row("ductor api enable", "Enable the WebSocket API server")
-    table.add_row("ductor api disable", "Disable the WebSocket API server")
+    table.add_row("ductor api enable", "启用 WebSocket API 服务器")
+    table.add_row("ductor api disable", "停用 WebSocket API 服务器")
 
     # Show current status
     paths = resolve_paths()

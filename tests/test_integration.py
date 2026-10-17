@@ -453,7 +453,7 @@ class TestErrorRecovery:
 
         result = await orch.handle_message(KEY, "Crash test")
 
-        assert "internal error" in result.text.lower()
+        assert "内部错误" in result.text
 
 
 # ---------------------------------------------------------------------------

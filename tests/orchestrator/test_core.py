@@ -242,7 +242,7 @@ async def test_streaming_routes_correctly(orch: Orchestrator) -> None:
 async def test_unhandled_error_returns_safe_message(orch: Orchestrator) -> None:
     object.__setattr__(orch._cli_service, "execute", AsyncMock(side_effect=RuntimeError("boom")))
     result = await orch.handle_message(SessionKey(chat_id=1), "Hello")
-    assert "internal error" in result.text.lower()
+    assert "内部错误" in result.text
 
 
 # -- abort --
@@ -470,7 +470,7 @@ async def test_domain_errors_return_safe_message(
         orch._cli_service, "execute", AsyncMock(side_effect=exc_class("domain failure"))
     )
     result = await orch.handle_message(SessionKey(chat_id=1), "Hello")
-    assert "internal error" in result.text.lower()
+    assert "内部错误" in result.text
 
 
 @pytest.mark.parametrize(
@@ -485,7 +485,7 @@ async def test_infrastructure_errors_return_safe_message(
         orch._cli_service, "execute", AsyncMock(side_effect=exc_class("infra failure"))
     )
     result = await orch.handle_message(SessionKey(chat_id=1), "Hello")
-    assert "internal error" in result.text.lower()
+    assert "内部错误" in result.text
 
 
 async def test_cancelled_error_propagates(orch: Orchestrator) -> None:
@@ -513,7 +513,7 @@ async def test_streaming_domain_errors_return_safe_message(
         AsyncMock(side_effect=exc_class("streaming domain failure")),
     )
     result = await orch.handle_message_streaming(SessionKey(chat_id=1), "Hello")
-    assert "internal error" in result.text.lower()
+    assert "内部错误" in result.text
 
 
 @pytest.mark.parametrize(
@@ -531,7 +531,7 @@ async def test_streaming_infrastructure_errors_return_safe_message(
         AsyncMock(side_effect=exc_class("streaming infra failure")),
     )
     result = await orch.handle_message_streaming(SessionKey(chat_id=1), "Hello")
-    assert "internal error" in result.text.lower()
+    assert "内部错误" in result.text
 
 
 async def test_streaming_cancelled_error_propagates(orch: Orchestrator) -> None:

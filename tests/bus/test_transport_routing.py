@@ -217,25 +217,7 @@ class TestTransportName:
         t = TelegramTransport(bot)
         assert t.transport_name == "tg"
 
-    async def test_matrix_transport_name(self) -> None:
-        """MatrixTransport.transport_name returns 'mx'."""
-        from unittest.mock import MagicMock
 
-        from ductor_bot.messenger.matrix.transport import MatrixTransport
-
-        bot = MagicMock()
-        t = MatrixTransport(bot)
-        assert t.transport_name == "mx"
-
-    async def test_slack_transport_name(self) -> None:
-        """SlackTransport.transport_name returns 'sl'."""
-        from unittest.mock import MagicMock
-
-        from ductor_bot.messenger.slack.transport import SlackTransport
-
-        bot = MagicMock()
-        t = SlackTransport(bot)
-        assert t.transport_name == "sl"
 
 
 # -- Adapter transport parameter --

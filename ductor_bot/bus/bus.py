@@ -18,7 +18,7 @@ class TransportAdapter(Protocol):
 
     @property
     def transport_name(self) -> str:
-        """Short identifier for this transport (e.g. ``"tg"``, ``"mx"``)."""
+        """Short identifier for this transport (e.g. ``"tg"``)."""
         ...
 
     async def deliver(self, envelope: Envelope) -> None:

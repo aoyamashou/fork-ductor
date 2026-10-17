@@ -1,4 +1,4 @@
-# Descripciones de comandos del bot (≤22 caracteres para Telegram móvil).
+# es interface strings
 
 [bot]
 new = "Nuevo chat"

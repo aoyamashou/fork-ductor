@@ -89,7 +89,7 @@ class TestCronBroadcast:
 
         bot.broadcast.assert_awaited_once()
         text = bot.broadcast.call_args[0][0]
-        assert "**TASK: Backup**" in text
+        assert "**定时任务: Backup**" in text
         assert "All good" in text
 
     async def test_broadcasts_status_only_when_no_text(self) -> None:
@@ -104,7 +104,7 @@ class TestCronBroadcast:
         await transport.deliver_broadcast(env)
 
         text = bot.broadcast.call_args[0][0]
-        assert "**TASK: Deploy**" in text
+        assert "**定时任务: Deploy**" in text
         assert "_failed_" in text
 
     async def test_skips_ack_only_success(self) -> None:
@@ -163,7 +163,7 @@ class TestWebhookCronBroadcast:
         await transport.deliver_broadcast(env)
 
         text = bot.broadcast.call_args[0][0]
-        assert "WEBHOOK (CRON TASK)" in text
+        assert "Webhook 定时任务" in text
         assert "Deploy" in text
         assert "Deployed v3" in text
 
@@ -208,7 +208,7 @@ class TestBackgroundDelivery:
             42, "research", "sid-1"
         )
         text = mock_send.call_args[0][2]
-        assert "[research] Complete" in text
+        assert "[research] 已完成" in text
         assert "12s" in text
 
     async def test_named_session_error(self) -> None:
@@ -228,7 +228,7 @@ class TestBackgroundDelivery:
             await transport.deliver(env)
 
         text = mock_send.call_args[0][2]
-        assert "[debug] Failed" in text
+        assert "[debug] 失败" in text
         assert "CLI crash" in text
 
     async def test_named_session_aborted(self) -> None:
@@ -247,7 +247,7 @@ class TestBackgroundDelivery:
             await transport.deliver(env)
 
         text = mock_send.call_args[0][2]
-        assert "[task1] Cancelled" in text
+        assert "[task1] 已取消" in text
 
     async def test_stateless_success(self) -> None:
         transport, _, _ = _make_transport()
@@ -265,7 +265,7 @@ class TestBackgroundDelivery:
             await transport.deliver(env)
 
         text = mock_send.call_args[0][2]
-        assert "Background Task Complete" in text
+        assert "后台任务已完成" in text
         assert "Done" in text
 
     async def test_stateless_error(self) -> None:
@@ -286,7 +286,7 @@ class TestBackgroundDelivery:
             await transport.deliver(env)
 
         text = mock_send.call_args[0][2]
-        assert "Background Task Failed" in text
+        assert "后台任务失败" in text
         assert "xyz" in text
 
     async def test_stateless_aborted(self) -> None:
@@ -304,7 +304,7 @@ class TestBackgroundDelivery:
             await transport.deliver(env)
 
         text = mock_send.call_args[0][2]
-        assert "Background Task Cancelled" in text
+        assert "后台任务已取消" in text
         assert "t1" in text
 
 
@@ -330,7 +330,7 @@ class TestInteragentDelivery:
 
         mock_send.assert_awaited_once()
         text = mock_send.call_args[0][2]
-        assert "Inter-Agent Request Failed" in text
+        assert "智能体间请求失败" in text
         assert "sub-agent" in text
         assert "timeout" in text
 
@@ -349,7 +349,7 @@ class TestInteragentDelivery:
 
         assert mock_send.await_count == 2
         first_text = mock_send.call_args_list[0][0][2]
-        assert "Provider Switch Detected" in first_text
+        assert "检测到模型提供商切换" in first_text
         second_text = mock_send.call_args_list[1][0][2]
         assert second_text == "Response text"
 
@@ -381,7 +381,7 @@ class TestTaskResultDelivery:
         assert mock_send.await_count == 2
         note = mock_send.call_args_list[0][0][2]
         assert "research" in note
-        assert "completed" in note
+        assert "已完成" in note
         assert "claude/opus" in note
 
     async def test_failed(self) -> None:
@@ -399,7 +399,7 @@ class TestTaskResultDelivery:
             await transport.deliver(env)
 
         note = mock_send.call_args_list[0][0][2]
-        assert "failed" in note
+        assert "失败" in note
         assert "OOM" in note
 
     async def test_cancelled(self) -> None:
@@ -416,7 +416,7 @@ class TestTaskResultDelivery:
             await transport.deliver(env)
 
         note = mock_send.call_args_list[0][0][2]
-        assert "cancelled" in note
+        assert "已取消" in note
 
 
 # ---------------------------------------------------------------------------

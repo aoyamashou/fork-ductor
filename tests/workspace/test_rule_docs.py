@@ -18,7 +18,7 @@ def test_agent_tools_rules_contains_transport_info() -> None:
 
     content = rules_path.read_text(encoding="utf-8")
 
-    # Transport-neutral: covers both Telegram and Matrix agent creation.
+    # Telegram is the only supported messaging transport.
     assert "Telegram" in content
-    assert "Matrix" in content
+    assert "Matrix" not in content
     assert "create_agent.py" in content

@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import platform
 import shutil
 import signal
 import sys
@@ -70,14 +71,7 @@ def _is_configured() -> bool:
     except (json.JSONDecodeError, OSError):
         return False
 
-    transports = _normalized_transport_list(data)
-    if not transports:
-        transports = [data.get("transport", "telegram")]
-    for t in transports:
-        checker = _IS_CONFIGURED_CHECKS.get(t, _is_configured_telegram)
-        if not checker(data):
-            return False
-    return True
+    return data.get("transport", "telegram") == "telegram" and _is_configured_telegram(data)
 
 
 def _is_configured_telegram(data: dict[str, object]) -> bool:
@@ -86,50 +80,14 @@ def _is_configured_telegram(data: dict[str, object]) -> bool:
     return bool(token) and not str(token).startswith("YOUR_") and bool(users)
 
 
-def _is_configured_matrix(data: dict[str, object]) -> bool:
-    mx = data.get("matrix", {})
-    if not isinstance(mx, dict):
-        return False
-    return bool(mx.get("homeserver")) and bool(mx.get("user_id"))
-
-
-def _is_configured_slack(data: dict[str, object]) -> bool:
-    slack = data.get("slack", {})
-    if not isinstance(slack, dict):
-        return False
-    has_tokens = bool(slack.get("bot_token")) and bool(slack.get("app_token"))
-    has_targets = bool(slack.get("allowed_users")) or bool(slack.get("allowed_channels"))
-    return has_tokens and has_targets
-
-
 def _normalized_transport_list(data: dict[str, object]) -> list[str]:
-    """Return the normalized transport list from raw config data.
-
-    ``transport`` (singular) is the authoritative primary. A non-empty
-    ``transports`` list is honored whenever the primary is one of its members:
-    the primary is placed first and the remaining configured transports are
-    preserved, so genuine multi-transport setups (e.g. telegram+matrix) are
-    never silently dropped when their ordering differs from ``transport``.
-    Only when the primary is absent from the list is the list treated as stale
-    and collapsed to the primary alone.
-    """
-    primary = data.get("transport", "telegram")
-    if not isinstance(primary, str) or not primary:
-        primary = "telegram"
-    raw_transports = data.get("transports", [])
-    if not isinstance(raw_transports, list):
-        raw_transports = []
-    transports = [t for t in raw_transports if isinstance(t, str) and t]
-    if primary not in transports:
-        return [primary]
-    return [primary, *(t for t in transports if t != primary)]
-
-
-_IS_CONFIGURED_CHECKS: dict[str, Callable[[dict[str, object]], bool]] = {
-    "telegram": _is_configured_telegram,
-    "matrix": _is_configured_matrix,
-    "slack": _is_configured_slack,
-}
+    """Normalize a Telegram-only configuration."""
+    if data.get("transport", "telegram") != "telegram":
+        raise ValueError("Only Telegram transport is supported")
+    transports = data.get("transports", ["telegram"])
+    if transports not in (["telegram"], []):
+        raise ValueError("Only Telegram transport is supported")
+    return ["telegram"]
 
 
 def load_config() -> AgentConfig:
@@ -169,6 +127,10 @@ def load_config() -> AgentConfig:
         sys.exit(1)
 
     normalized_existing = False
+    for removed in ("matrix", "slack"):
+        if removed in user_data:
+            del user_data[removed]
+            normalized_existing = True
     if user_data.get("gemini_api_key") is None:
         user_data["gemini_api_key"] = DEFAULT_EMPTY_GEMINI_API_KEY
         normalized_existing = True
@@ -216,6 +178,9 @@ async def run_bot(config: AgentConfig) -> int:
 
     Returns the exit code from the bot (``0`` = clean, ``42`` = restart requested).
     """
+    from ductor_bot.i18n import init as init_i18n
+
+    init_i18n(config.language)
     paths = resolve_paths(ductor_home=config.ductor_home)
     _validate_transports(config)
 
@@ -234,7 +199,7 @@ async def run_bot(config: AgentConfig) -> int:
         if current_task is not None and not current_task.done():
             current_task.cancel()
 
-    if current_task is not None and sys.platform != "win32":
+    if current_task is not None:
         for sig in (signal.SIGTERM, signal.SIGINT):
             try:
                 loop.add_signal_handler(sig, _request_shutdown)
@@ -269,38 +234,8 @@ def _validate_telegram_config(config: AgentConfig) -> None:
         sys.exit(1)
 
 
-def _validate_matrix_config(config: AgentConfig) -> None:
-    """Validate Matrix transport requirements."""
-    m = config.matrix
-    hint = t_rich("config.onboarding_hint")
-    if not m.homeserver:
-        _console.print(t_rich("config.matrix_no_homeserver", hint=hint))
-        sys.exit(1)
-    if not m.user_id:
-        _console.print(t_rich("config.matrix_no_user", hint=hint))
-        sys.exit(1)
-    if not m.password and not m.access_token:
-        _console.print(t_rich("config.matrix_no_auth", hint=hint))
-        sys.exit(1)
-    if not m.allowed_rooms and not m.allowed_users:
-        _console.print(t_rich("config.matrix_no_target", hint=hint))
-        sys.exit(1)
-
-
-def _validate_slack_config(config: AgentConfig) -> None:
-    """Validate Slack transport requirements."""
-    slack = config.slack
-    has_tokens = bool(slack.bot_token) and bool(slack.app_token)
-    has_targets = bool(slack.allowed_users) or bool(slack.allowed_channels)
-    if not has_tokens or not has_targets:
-        _console.print(t_rich("config.incomplete"))
-        sys.exit(1)
-
-
 _TRANSPORT_VALIDATORS: dict[str, Callable[[AgentConfig], None]] = {
     "telegram": _validate_telegram_config,
-    "matrix": _validate_matrix_config,
-    "slack": _validate_slack_config,
 }
 
 
@@ -378,6 +313,11 @@ _Action = Callable[[], None]
 
 def main() -> None:
     """CLI entry point."""
+    if sys.platform != "darwin" or platform.machine() != "arm64":
+        raise SystemExit("此版本仅支持 macOS Apple Silicon (arm64)")
+    from ductor_bot.i18n import init as init_i18n
+
+    init_i18n("zh-CN")
     args = sys.argv[1:]
     commands = [a for a in args if not a.startswith("-")]
     verbose = "--verbose" in args or "-v" in args

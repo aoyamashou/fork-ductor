@@ -1,6 +1,4 @@
-# Cadenas CLI en español (Rich, mostradas en terminal).
-
-# -- Comando status ------------------------------------------------------------
+# es interface strings
 
 [status]
 running = "[bold green]En ejecución[/bold green]  pid={pid}  tiempo activo: {uptime}"
@@ -13,17 +11,9 @@ errors_none = "Errores:    [green]0[/green]"
 paths_header = "[bold]Rutas:[/bold]"
 not_configured = "[bold yellow]No configurado.[/bold yellow]\n\nEjecuta [bold]ductor[/bold] para iniciar el asistente de configuración."
 
-# -- Validación de config -----------------------------------------------------
-
 [config]
 incomplete = "[bold yellow]Config incompleta. Ejecuta [bold]ductor onboarding[/bold].[/bold yellow]"
-matrix_no_homeserver = "[bold yellow]Se requiere la URL del homeserver de Matrix.{hint}[/bold yellow]"
-matrix_no_user = "[bold yellow]Se requiere el user_id de Matrix.{hint}[/bold yellow]"
-matrix_no_auth = "[bold yellow]Se requiere contraseña o access_token de Matrix.{hint}[/bold yellow]"
-matrix_no_target = "[bold yellow]Se requiere al menos un allowed_room o allowed_user.{hint}[/bold yellow]"
 onboarding_hint = " Ejecuta [bold]ductor onboarding[/bold] para reconfigurar."
-
-# -- Ciclo de vida -------------------------------------------------------------
 
 [lifecycle]
 stopping_docker = "[dim]Deteniendo contenedor Docker '{name}'...[/dim]"
@@ -35,12 +25,7 @@ no_instance = "[dim]No se encontró ninguna instancia del bot en ejecución.[/di
 
 [lifecycle.uninstall]
 title = "[bold red]Desinstalar ductor[/bold red]"
-body = """\
-[bold red]Esto eliminará ductor permanentemente de tu sistema.[/bold red]\n
-  1. Detener el bot en ejecución (si está activo)
-  2. Eliminar contenedor e imagen Docker (si se usa)
-  3. Borrar todos los datos en ~/.ductor/
-  4. Desinstalar el paquete ductor"""
+body = "[bold red]Esto eliminará ductor permanentemente de tu sistema.[/bold red]\n\n  1. Detener el bot en ejecución (si está activo)\n  2. Eliminar contenedor e imagen Docker (si se usa)\n  3. Borrar todos los datos en ~/.ductor/\n  4. Desinstalar el paquete ductor"
 confirm = "¿Estás seguro de que quieres desinstalar todo?"
 cancelled = "[dim]Desinstalación cancelada.[/dim]"
 removing_image = "[dim]Eliminando imagen Docker '{image}'...[/dim]"
@@ -53,21 +38,13 @@ done_body = "[bold green]ductor ha sido eliminado completamente.[/bold green]\n\
 
 [lifecycle.upgrade]
 dev_title = "[bold yellow]Instalación de desarrollo[/bold yellow]"
-dev_body = """\
-[bold yellow]Ejecutándose desde el código fuente (instalación editable).[/bold yellow]\n
-La auto-actualización no está disponible.
-Actualiza con [bold]git pull[/bold] en el directorio del proyecto."""
+dev_body = "[bold yellow]Ejecutándose desde el código fuente (instalación editable).[/bold yellow]\n\nLa auto-actualización no está disponible.\nActualiza con [bold]git pull[/bold] en el directorio del proyecto."
 title = "[bold cyan]Actualizando ductor...[/bold cyan]"
-body = """\
-  1. Detener el bot en ejecución de forma controlada
-  2. Actualizar a la última versión
-  3. Reiniciar"""
+body = "1. Detener el bot en ejecución de forma controlada\n  2. Actualizar a la última versión\n  3. Reiniciar"
 upgrading = "[dim]Actualizando paquete...[/dim]"
 complete = "[green]Actualización completada: {old} -> {new}[/green]"
 unchanged = "[bold yellow]Versión sin cambios tras la actualización ({version}).[/bold yellow]\nSe intentó un reintento automático, pero no se pudo verificar una nueva versión instalada."
 restarting = "[dim]Reiniciando...[/dim]"
-
-# -- Comandos Docker -----------------------------------------------------------
 
 [docker]
 config_not_found = "[bold red]Config no encontrada. Ejecuta ductor primero.[/bold red]"
@@ -121,8 +98,6 @@ removed = "[green]Eliminado:[/green] {name}"
 rebuild_hint = "[yellow]Ejecuta 'ductor docker rebuild' para aplicar.[/yellow]"
 dep_warning = "[yellow]Advertencia: {dependents} dependen de {name}.[/yellow]"
 
-# -- Comandos de servicio ------------------------------------------------------
-
 [service]
 not_installed = "[dim]Servicio no instalado. Ejecuta [bold]ductor service install[/bold].[/dim]"
 not_running = "[dim]El servicio no está ejecutándose.[/dim]"
@@ -136,22 +111,7 @@ stop_failed = "[red]Error al detener: {error}[/red]"
 
 [service.install]
 title = "Servicio en segundo plano de ductor"
-body = """\
-[bold green]ductor ahora se ejecuta como servicio en segundo plano.[/bold green]\n
-{detail}\n
-[bold]Comandos útiles:[/bold]\n
-  [cyan]ductor service status[/cyan]     Verificar si está ejecutándose
-  [cyan]ductor service stop[/cyan]       Detener el servicio
-  [cyan]ductor service logs[/cyan]       {logs_hint}
-  [cyan]ductor service uninstall[/cyan]  Eliminar el servicio"""
-
-[service.linux]
-no_systemd = "[bold red]systemd no encontrado. La instalación del servicio requiere Linux con systemd.[/bold red]"
-linger_warning = "[bold yellow]Linger debe estar activado para que ductor siga ejecutándose después de cerrar sesión.[/bold yellow]"
-linger_enabled = "[green]Linger activado.[/green]"
-linger_manual = "[yellow]No se pudo activar linger automáticamente.[/yellow]\nEjecuta manualmente: [bold]sudo loginctl enable-linger {user}[/bold]"
-start_failed = "[bold red]Error al iniciar el servicio:[/bold red] {error}"
-detail = "Se inicia con el arranque del sistema y se reinicia automáticamente en caso de fallo."
+body = "[bold green]ductor ahora se ejecuta como servicio en segundo plano.[/bold green]\n\n{detail}\n\n[bold]Comandos útiles:[/bold]\n\n  [cyan]ductor service status[/cyan]     Verificar si está ejecutándose\n  [cyan]ductor service stop[/cyan]       Detener el servicio\n  [cyan]ductor service logs[/cyan]       {logs_hint}\n  [cyan]ductor service uninstall[/cyan]  Eliminar el servicio"
 
 [service.macos]
 no_launchctl = "[bold red]launchctl no encontrado. La instalación del servicio requiere macOS.[/bold red]"
@@ -159,22 +119,6 @@ start_failed = "[bold red]Error al cargar el Launch Agent:[/bold red] {error}"
 detail = "Se inicia al iniciar sesión y se reinicia en caso de fallo (limitación de 10s)."
 unload_failed = "[red]Error al descargar el agente: {error}[/red]"
 not_loaded = "[red]Agente no cargado. Prueba: [bold]ductor service install[/bold][/red]"
-
-[service.windows]
-admin_title = "[bold yellow]Administrador requerido[/bold yellow]"
-admin_body = """\
-[bold yellow]Se requieren privilegios de administrador.[/bold yellow]\n
-Abre un terminal como administrador e inténtalo de nuevo:\n
-  [bold]1.[/bold] Haz clic derecho en CMD o PowerShell
-  [bold]2.[/bold] Selecciona [cyan]'Ejecutar como administrador'[/cyan]
-  [bold]3.[/bold] Ejecuta: [cyan]ductor service install[/cyan]"""
-no_scheduler = "[bold red]Programador de tareas no disponible. La instalación del servicio requiere Windows.[/bold red]"
-no_pythonw = "[dim]Nota: pythonw.exe no encontrado. Una ventana de consola podría ser visible.[/dim]"
-create_failed = "[bold red]Error al crear la tarea programada:[/bold red] {error}"
-start_failed = "[bold red]Tarea creada pero error al iniciar:[/bold red] {error}"
-remove_failed = "[red]Error al eliminar la tarea: {error}[/red]"
-detail = "Se inicia 10s después del inicio de sesión y se reinicia en caso de fallo (hasta 3 reintentos, 1 min de intervalo)."
-query_failed = "[red]No se pudo consultar el estado de la tarea: {error}[/red]"
 
 [service.logs]
 no_logs = "[dim]No se encontraron archivos de log.[/dim]"
@@ -185,8 +129,6 @@ not_installed = "[dim]Servicio no instalado.[/dim]"
 streaming = "[dim]Mostrando logs (Ctrl+C para detener)...[/dim]"
 no_journalctl = "[bold red]journalctl no encontrado.[/bold red]"
 
-# -- Comandos API --------------------------------------------------------------
-
 [api]
 title = "[bold]Comandos API[/bold] [dim](beta)[/dim]"
 status_not_configured = "[dim]no configurado[/dim]"
@@ -195,26 +137,14 @@ status_disabled = "[dim]desactivado[/dim]"
 
 [api.missing_dep]
 title = "[bold]Dependencia faltante[/bold]"
-body = """\
-[bold yellow]PyNaCl es necesario para el servidor API (cifrado E2E).[/bold yellow]\n
-Instálalo con:\n
-  [bold]{hint}[/bold]\n
-Luego ejecuta [bold]ductor api enable[/bold] de nuevo."""
+body = "[bold yellow]PyNaCl es necesario para el servidor API (cifrado E2E).[/bold yellow]\n\nInstálalo con:\n\n  [bold]{hint}[/bold]\n\nLuego ejecuta [bold]ductor api enable[/bold] de nuevo."
 
 [api.enabled]
 title = "[bold]Servidor API[/bold] [dim](beta)[/dim]"
-body = """\
-[bold green]Servidor API activado.[/bold green]\n
-  Host:   [cyan]{host}[/cyan]
-  Puerto: [cyan]{port}[/cyan]
-  Token:  [cyan]{token}[/cyan]\n
-[dim]Reinicia el bot para iniciar el servidor API.[/dim]
-[dim]Diseñado para uso con Tailscale u otras redes privadas.[/dim]"""
+body = "[bold green]Servidor API activado.[/bold green]\n\n  Host:   [cyan]{host}[/cyan]\n  Puerto: [cyan]{port}[/cyan]\n  Token:  [cyan]{token}[/cyan]\n\n[dim]Reinicia el bot para iniciar el servidor API.[/dim]\n[dim]Diseñado para uso con Tailscale u otras redes privadas.[/dim]"
 
 [api.disabled]
 status = "Servidor API: [dim]desactivado[/dim]"
-
-# -- Comandos de agentes -------------------------------------------------------
 
 [agents]
 col_agent = "Agente"
@@ -249,8 +179,6 @@ confirm = "¿Eliminar agente '{name}'? (Los datos del workspace no se borrarán.
 done = "[green]Agente '{name}' eliminado de agents.json.[/green]"
 data_hint = "[dim]Los datos del workspace permanecen en {path}[/dim]"
 
-# -- Instalar extras -----------------------------------------------------------
-
 [install]
 already = "[green]✓[/green] {description} ya está instalado."
 installing = "Instalando {description}..."
@@ -262,8 +190,6 @@ col_description = "Descripción"
 col_status = "Estado"
 status_installed = "[green]instalado[/green]"
 status_not_installed = "[dim]no instalado[/dim]"
-
-# -- Tabla de ayuda ------------------------------------------------------------
 
 [help]
 col_command = "Comando"
@@ -280,7 +206,7 @@ service = "Gestión de servicios (status/stop/logs/...)"
 agents = "Gestión de sub-agentes (list/add/remove)"
 docker = "Gestión de Docker (rebuild/enable/disable)"
 api = "Gestión del servidor API (enable/disable) [beta]"
-install = "Instalar extras opcionales (matrix, api)"
+install = "Instalar extras opcionales (api)"
 status = "Mostrar estado del bot, rutas y agentes"
 help = "Mostrar este mensaje"
 verbose = "Salida de log detallada"

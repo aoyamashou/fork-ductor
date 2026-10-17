@@ -45,11 +45,6 @@ def _load_banner() -> str:
 
 
 _TOKEN_PATTERN = re.compile(r"^\d{8,}:[A-Za-z0-9_-]{30,}$")
-_MATRIX_USER_RE = re.compile(r"^@[a-z0-9._=/+-]+:[a-z0-9.-]+$", re.IGNORECASE)
-_SLACK_BOT_TOKEN_RE = re.compile(r"^xoxb-[A-Za-z0-9-]+$")
-_SLACK_APP_TOKEN_RE = re.compile(r"^xapp-[A-Za-z0-9-]+$")
-_SLACK_CHANNEL_RE = re.compile(r"^[CG][A-Z0-9]{8,}$")
-_SLACK_USER_RE = re.compile(r"^U[A-Z0-9]{8,}$")
 
 _TIMEZONES: list[str] = [
     # Europe
@@ -103,9 +98,9 @@ def _show_banner(console: Console) -> None:
 
 
 _STATUS_ICON = {
-    AuthStatus.AUTHENTICATED: "[bold green]authenticated[/bold green]",
-    AuthStatus.INSTALLED: "[bold yellow]installed but not logged in[/bold yellow]",
-    AuthStatus.NOT_FOUND: "[dim]not found[/dim]",
+    AuthStatus.AUTHENTICATED: "[bold green]已登录[/bold green]",
+    AuthStatus.INSTALLED: "[bold yellow]已安装但未登录[/bold yellow]",
+    AuthStatus.NOT_FOUND: "[dim]未安装[/dim]",
 }
 
 
@@ -184,31 +179,6 @@ def _show_disclaimer(console: Console) -> None:
 # ---------------------------------------------------------------------------
 
 
-def _ask_transport(console: Console) -> str:
-    """Prompt for the messaging transport."""
-    console.print(
-        Panel(
-            t_rich("wizard.transport.body"),
-            title=t_rich("wizard.transport.title"),
-            border_style="blue",
-            padding=(1, 2),
-        ),
-    )
-
-    selected: str | None = questionary.select(
-        t_rich("wizard.transport.prompt"),
-        choices=["Telegram", "Matrix", "Slack"],
-    ).ask()
-    if selected is None:
-        _abort()
-    transport_by_label = {
-        "Telegram": "telegram",
-        "Matrix": "matrix",
-        "Slack": "slack",
-    }
-    return transport_by_label[selected]
-
-
 # ---------------------------------------------------------------------------
 # Telegram setup
 # ---------------------------------------------------------------------------
@@ -263,203 +233,7 @@ def _ask_user_id(console: Console) -> list[int]:
 
 
 # ---------------------------------------------------------------------------
-# Matrix setup
-# ---------------------------------------------------------------------------
-
-
-def _ask_matrix_homeserver(console: Console) -> str:
-    """Prompt for the Matrix homeserver URL."""
-    console.print(
-        Panel(
-            t_rich("wizard.matrix.homeserver.body"),
-            title=t_rich("wizard.matrix.homeserver.title"),
-            border_style="blue",
-            padding=(1, 2),
-        ),
-    )
-
-    while True:
-        url: str | None = questionary.text(t_rich("wizard.matrix.homeserver.prompt")).ask()
-        if url is None:
-            _abort()
-        url = url.strip().rstrip("/")
-        if url.startswith("https://") and len(url) > len("https://"):
-            return url
-        console.print(t_rich("wizard.matrix.homeserver.error"))
-
-
-def _ask_matrix_user_id(console: Console) -> str:
-    """Prompt for the Matrix bot user ID."""
-    console.print(
-        Panel(
-            t_rich("wizard.matrix.user_id.body"),
-            title=t_rich("wizard.matrix.user_id.title"),
-            border_style="blue",
-            padding=(1, 2),
-        ),
-    )
-
-    while True:
-        uid: str | None = questionary.text(t_rich("wizard.matrix.user_id.prompt")).ask()
-        if uid is None:
-            _abort()
-        uid = uid.strip()
-        if _MATRIX_USER_RE.match(uid):
-            return uid
-        console.print(t_rich("wizard.matrix.user_id.error"))
-
-
-def _ask_matrix_password(console: Console) -> str:
-    """Prompt for the Matrix account password."""
-    console.print(
-        Panel(
-            t_rich("wizard.matrix.password.body"),
-            title=t_rich("wizard.matrix.password.title"),
-            border_style="blue",
-            padding=(1, 2),
-        ),
-    )
-
-    while True:
-        pw: str | None = questionary.password(t_rich("wizard.matrix.password.prompt")).ask()
-        if pw is None:
-            _abort()
-        pw = pw.strip()
-        if pw:
-            return pw
-        console.print(t_rich("wizard.matrix.password.error"))
-
-
-def _ask_matrix_allowed_users(console: Console) -> list[str]:
-    """Prompt for allowed Matrix user IDs."""
-    console.print(
-        Panel(
-            t_rich("wizard.matrix.allowed_users.body"),
-            title=t_rich("wizard.matrix.allowed_users.title"),
-            border_style="blue",
-            padding=(1, 2),
-        ),
-    )
-
-    while True:
-        raw: str | None = questionary.text(t_rich("wizard.matrix.allowed_users.prompt")).ask()
-        if raw is None:
-            _abort()
-        raw = raw.strip()
-        if _MATRIX_USER_RE.match(raw):
-            return [raw]
-        console.print(t_rich("wizard.matrix.allowed_users.error"))
-
-
-# ---------------------------------------------------------------------------
-# Slack setup
-# ---------------------------------------------------------------------------
-
-
-def _ask_slack_bot_token(console: Console) -> str:
-    """Prompt for the Slack bot token."""
-    console.print(
-        Panel(
-            t_rich("wizard.slack.bot_token.body"),
-            title=t_rich("wizard.slack.bot_token.title"),
-            border_style="blue",
-            padding=(1, 2),
-        )
-    )
-
-    while True:
-        token: str | None = questionary.password(t_rich("wizard.slack.bot_token.prompt")).ask()
-        if token is None:
-            _abort()
-        token = token.strip()
-        if _SLACK_BOT_TOKEN_RE.match(token):
-            return token
-        console.print(t_rich("wizard.slack.bot_token.error"))
-
-
-def _ask_slack_app_token(console: Console) -> str:
-    """Prompt for the Slack app token."""
-    console.print(
-        Panel(
-            t_rich("wizard.slack.app_token.body"),
-            title=t_rich("wizard.slack.app_token.title"),
-            border_style="blue",
-            padding=(1, 2),
-        )
-    )
-
-    while True:
-        token: str | None = questionary.password(t_rich("wizard.slack.app_token.prompt")).ask()
-        if token is None:
-            _abort()
-        token = token.strip()
-        if _SLACK_APP_TOKEN_RE.match(token):
-            return token
-        console.print(t_rich("wizard.slack.app_token.error"))
-
-
-def _parse_slack_ids(raw: str, *, pattern: re.Pattern[str]) -> list[str]:
-    """Parse comma/space-separated Slack IDs and validate them."""
-    values = [part.strip() for part in re.split(r"[\s,]+", raw) if part.strip()]
-    if not values:
-        return []
-    if any(pattern.match(value) is None for value in values):
-        raise ValueError(raw)
-    return values
-
-
-def _ask_slack_allowed_channels(console: Console) -> list[str]:
-    """Prompt for allowed Slack channel IDs."""
-    console.print(
-        Panel(
-            t_rich("wizard.slack.allowed_channels.body"),
-            title=t_rich("wizard.slack.allowed_channels.title"),
-            border_style="blue",
-            padding=(1, 2),
-        )
-    )
-
-    while True:
-        raw: str | None = questionary.text(t_rich("wizard.slack.allowed_channels.prompt")).ask()
-        if raw is None:
-            _abort()
-        raw = raw.strip()
-        if not raw:
-            return []
-        try:
-            return _parse_slack_ids(raw, pattern=_SLACK_CHANNEL_RE)
-        except ValueError:
-            console.print(t_rich("wizard.slack.allowed_channels.error"))
-
-
-def _ask_slack_allowed_users(console: Console) -> list[str]:
-    """Prompt for allowed Slack user IDs."""
-    console.print(
-        Panel(
-            t_rich("wizard.slack.allowed_users.body"),
-            title=t_rich("wizard.slack.allowed_users.title"),
-            border_style="blue",
-            padding=(1, 2),
-        )
-    )
-
-    while True:
-        raw: str | None = questionary.text(t_rich("wizard.slack.allowed_users.prompt")).ask()
-        if raw is None:
-            _abort()
-        raw = raw.strip()
-        try:
-            values = _parse_slack_ids(raw, pattern=_SLACK_USER_RE)
-        except ValueError:
-            console.print(t_rich("wizard.slack.allowed_users.error"))
-            continue
-        if values:
-            return values
-        console.print(t_rich("wizard.slack.allowed_users.error"))
-
-
-# ---------------------------------------------------------------------------
-# Common steps
+# Docker setup
 # ---------------------------------------------------------------------------
 
 
@@ -627,17 +401,8 @@ def _offer_service_install(console: Console) -> bool:
     if not is_service_available():
         return False
 
-    is_windows = sys.platform == "win32"
-    is_macos = sys.platform == "darwin"
-    if is_windows:
-        mechanism = "scheduled task"
-        trigger = "login"
-    elif is_macos:
-        mechanism = "launch agent"
-        trigger = "login"
-    else:
-        mechanism = "systemd service"
-        trigger = "boot"
+    mechanism = "launch agent"
+    trigger = "login"
 
     console.print(
         Panel(
@@ -673,16 +438,6 @@ class _WizardConfig(TypedDict, total=False):
     # Telegram
     telegram_token: str
     allowed_user_ids: list[int] | None
-    # Matrix
-    matrix_homeserver: str
-    matrix_user_id: str
-    matrix_password: str
-    matrix_allowed_users: list[str] | None
-    # Slack
-    slack_bot_token: str
-    slack_app_token: str
-    slack_allowed_channels: list[str] | None
-    slack_allowed_users: list[str] | None
 
 
 def _load_existing_config(config_path: Path) -> dict[str, object]:
@@ -702,30 +457,9 @@ def _load_existing_config(config_path: Path) -> dict[str, object]:
 
 
 def _apply_transport_config(merged: dict[str, object], cfg: _WizardConfig) -> None:
-    """Write transport-specific keys into *merged*."""
-    transport = cfg.get("transport", "telegram")
-    if transport == "telegram":
-        merged["telegram_token"] = cfg.get("telegram_token", "")
-        merged["allowed_user_ids"] = cfg.get("allowed_user_ids") or []
-    elif transport == "matrix":
-        matrix_section = merged.get("matrix")
-        if not isinstance(matrix_section, dict):
-            matrix_section = {}
-            merged["matrix"] = matrix_section
-        matrix_section["homeserver"] = cfg.get("matrix_homeserver", "")
-        matrix_section["user_id"] = cfg.get("matrix_user_id", "")
-        matrix_section["password"] = cfg.get("matrix_password", "")
-        matrix_section["allowed_users"] = cfg.get("matrix_allowed_users") or []
-        matrix_section["store_path"] = "matrix_store"
-    else:  # slack
-        slack_section = merged.get("slack")
-        if not isinstance(slack_section, dict):
-            slack_section = {}
-            merged["slack"] = slack_section
-        slack_section["bot_token"] = cfg.get("slack_bot_token", "")
-        slack_section["app_token"] = cfg.get("slack_app_token", "")
-        slack_section["allowed_channels"] = cfg.get("slack_allowed_channels") or []
-        slack_section["allowed_users"] = cfg.get("slack_allowed_users") or []
+    """Write Telegram settings into *merged*."""
+    merged["telegram_token"] = cfg.get("telegram_token", "")
+    merged["allowed_user_ids"] = cfg.get("allowed_user_ids") or []
 
 
 def _write_config(cfg: _WizardConfig) -> Path:
@@ -744,7 +478,7 @@ def _write_config(cfg: _WizardConfig) -> Path:
     if merged.get("gemini_api_key") is None:
         merged["gemini_api_key"] = DEFAULT_EMPTY_GEMINI_API_KEY
 
-    merged["transport"] = cfg.get("transport", "telegram")
+    merged["transport"] = "telegram"
     merged["transports"] = [merged["transport"]]
     merged["user_timezone"] = cfg.get("user_timezone", "UTC")
     raw_docker = merged.get("docker")
@@ -768,48 +502,13 @@ def _write_config(cfg: _WizardConfig) -> Path:
     return config_path
 
 
-def _collect_transport_config(console: Console, transport: str) -> _WizardConfig:
-    """Collect transport-specific onboarding answers."""
-    if transport == "telegram":
-        telegram_token = _ask_telegram_token(console)
-        console.print()
-        allowed_user_ids = _ask_user_id(console)
-        console.print()
-        return _WizardConfig(
-            telegram_token=telegram_token,
-            allowed_user_ids=allowed_user_ids,
-        )
-
-    if transport == "matrix":
-        matrix_homeserver = _ask_matrix_homeserver(console)
-        console.print()
-        matrix_user_id = _ask_matrix_user_id(console)
-        console.print()
-        matrix_password = _ask_matrix_password(console)
-        console.print()
-        matrix_allowed_users = _ask_matrix_allowed_users(console)
-        console.print()
-        return _WizardConfig(
-            matrix_homeserver=matrix_homeserver,
-            matrix_user_id=matrix_user_id,
-            matrix_password=matrix_password,
-            matrix_allowed_users=matrix_allowed_users,
-        )
-
-    slack_bot_token = _ask_slack_bot_token(console)
+def _collect_transport_config(console: Console) -> _WizardConfig:
+    """Collect Telegram onboarding answers."""
+    telegram_token = _ask_telegram_token(console)
     console.print()
-    slack_app_token = _ask_slack_app_token(console)
+    allowed_user_ids = _ask_user_id(console)
     console.print()
-    slack_allowed_channels = _ask_slack_allowed_channels(console)
-    console.print()
-    slack_allowed_users = _ask_slack_allowed_users(console)
-    console.print()
-    return _WizardConfig(
-        slack_bot_token=slack_bot_token,
-        slack_app_token=slack_app_token,
-        slack_allowed_channels=slack_allowed_channels,
-        slack_allowed_users=slack_allowed_users,
-    )
+    return _WizardConfig(telegram_token=telegram_token, allowed_user_ids=allowed_user_ids)
 
 
 # ---------------------------------------------------------------------------
@@ -829,9 +528,7 @@ def run_onboarding() -> bool:
     _show_disclaimer(console)
     console.print()
 
-    transport = _ask_transport(console)
-    console.print()
-    transport_config = _collect_transport_config(console, transport)
+    transport_config = _collect_transport_config(console)
 
     docker_enabled = _ask_docker(console)
     console.print()
@@ -846,7 +543,7 @@ def run_onboarding() -> bool:
 
     config_path = _write_config(
         _WizardConfig(
-            transport=transport,
+            transport="telegram",
             user_timezone=timezone,
             docker_enabled=docker_enabled,
             docker_extras=docker_extras,
@@ -856,7 +553,7 @@ def run_onboarding() -> bool:
 
     paths = resolve_paths()
 
-    # Offer background service setup on Linux with systemd
+    # Offer background service setup with macOS launchd.
     run_as_service = _offer_service_install(console)
 
     action = (

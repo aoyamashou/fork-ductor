@@ -153,7 +153,7 @@ def build_interagent_injection_prompt(
 
     Used when an async inter-agent task returns a successful result.
     ``transport_label`` describes where the user reaches the recipient
-    (e.g. ``"Telegram chat"``, ``"Matrix room"``).  Returns ``""`` when
+    (e.g. ``"Telegram chat"``).  Returns ``""`` when
     ``result.success`` is False — callers should treat an empty string as
     "no injection, deliver raw text only".
     """

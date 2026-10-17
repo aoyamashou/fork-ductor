@@ -419,55 +419,7 @@ Keep labels short. Callback data is truncated to 64 bytes by the framework.
 Do not place button markers inside code blocks.
 """
 
-_TRANSPORT_MATRIX = """
-
----
-
-## Messenger Rules
-
-- Replies are Matrix messages (no hard character limit, but keep responses readable).
-- Messages are formatted as HTML (Markdown is auto-converted by the framework).
-- Keep responses structured and scannable.
-- To send files, use `<file:/absolute/path>`.
-- Save generated deliverables in `output_to_user/`.
-- Do not suggest GUI-only actions like `xdg-open`.
-- Commands use `!` prefix (e.g. `!help`, `!status`). \
-`/` also works but may conflict with Element's built-in commands.
-
-### Quick Reply Buttons
-
-Use button syntax at the end of messages:
-
-- `[button:Label]` markers
-- same line = one row
-- new line = new row
-
-In Matrix, buttons are rendered as a numbered text list. The user types \
-the label text (or number) to "press" a button — there are no clickable \
-inline buttons. Keep labels short and distinctive.
-Do not place button markers inside code blocks.
-"""
-
-_TRANSPORT_SLACK = """
-
----
-
-## Messenger Rules
-
-- Replies are Slack messages.
-- Slack command keywords work as normal messages or slash-prefixed messages
-  (for example `help` or `/help`).
-- In channels, keep long conversations inside the existing thread when one exists.
-- To send files, use `<file:/absolute/path>`.
-- Save generated deliverables in `output_to_user/`.
-- Do not suggest GUI-only actions like opening Finder or clicking app-only menus.
-"""
-
-_TRANSPORT_RULES: dict[str, str] = {
-    "telegram": _TRANSPORT_TELEGRAM,
-    "matrix": _TRANSPORT_MATRIX,
-    "slack": _TRANSPORT_SLACK,
-}
+_TRANSPORT_RULES: dict[str, str] = {"telegram": _TRANSPORT_TELEGRAM}
 
 # ---------------------------------------------------------------------------
 # Multi-Agent identity injection
@@ -483,7 +435,7 @@ _IDENTITY_MAIN = """
 
 - You are the primary agent and coordinator in a multi-agent system.
 - You can create, manage, and communicate with sub-agents.
-- Each sub-agent has its own **bot** with a separate chat (Telegram or Matrix).
+- Each sub-agent has its own **bot** with a separate chat (Telegram).
 
 ### How the user interacts with sub-agents
 

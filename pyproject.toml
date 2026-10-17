@@ -5,14 +5,14 @@ build-backend = "hatchling.build"
 [project]
 name = "ductor"
 version = "0.20.1"
-description = "Control Claude Code, Codex, Gemini, Antigravity, and Grok from Telegram, Matrix, or Slack. Live streaming, sessions, cron jobs, webhooks, Docker sandboxing."
+description = "Control Claude Code, Codex, Gemini, Antigravity, and Grok from Telegram. Live streaming, sessions, cron jobs, webhooks, Docker sandboxing."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "PleasePrompto" }]
 keywords = [
-    "ductor", "ai", "telegram", "matrix", "slack", "bot", "agent",
+    "ductor", "ai", "telegram", "bot", "agent",
     "claude", "codex", "gemini", "grok", "cli", "automation", "streaming",
 ]
 classifiers = [
@@ -21,7 +21,7 @@ classifiers = [
     "Framework :: AsyncIO",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+    "Operating System :: MacOS",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -60,14 +60,7 @@ lint = [
 api = [
     "PyNaCl>=1.6.2",
 ]
-matrix = [
-    "matrix-nio>=0.25.0",
-]
-slack = [
-    "slack-bolt>=1.23.0,<2.0.0",
-    "slack-sdk>=3.37.0,<4.0.0",
-]
-dev = ["ductor[test,lint,api,matrix,slack]"]
+dev = ["ductor[test,lint,api]"]
 
 [project.urls]
 Homepage = "https://ductor.dev"
@@ -195,14 +188,6 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = ["nacl.*"]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = ["nio.*"]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = ["slack_bolt.*", "slack_sdk.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]

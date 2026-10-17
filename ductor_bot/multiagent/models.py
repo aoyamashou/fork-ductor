@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Literal
 
 from pydantic import BaseModel
 
@@ -13,7 +14,6 @@ from ductor_bot.config import (
     CLIParametersConfig,
     DockerConfig,
     HeartbeatConfig,
-    MatrixConfig,
     StreamingConfig,
     WebhookConfig,
 )
@@ -23,20 +23,17 @@ class SubAgentConfig(BaseModel):
     """Minimal sub-agent definition from agents.json.
 
     Only ``name`` is strictly required. Telegram agents need ``telegram_token``
-    and ``allowed_user_ids``; Matrix agents need ``matrix`` config.
+    and ``allowed_user_ids``.
     All other fields are optional and inherit from the main agent config.
     """
 
     name: str
-    transport: str = "telegram"  # "telegram" | "matrix"
+    transport: Literal["telegram"] = "telegram"
 
     # Telegram credentials (required when transport=telegram)
     telegram_token: str = ""
     allowed_user_ids: list[int] | None = None
     allowed_group_ids: list[int] | None = None
-
-    # Matrix credentials (required when transport=matrix)
-    matrix: MatrixConfig | None = None
 
     # Group behaviour
     group_mention_only: bool | None = None
@@ -90,8 +87,7 @@ def merge_sub_agent_config(
     base["telegram_token"] = sub.telegram_token
     base["allowed_user_ids"] = sub.allowed_user_ids or []
     base["allowed_group_ids"] = sub.allowed_group_ids or []
-    if sub.matrix is not None:
-        base["matrix"] = sub.matrix.model_dump()
+    base["transports"] = ["telegram"]
 
     # Sub-agents don't need the user-facing API server (they use InterAgentBus).
     # Disable it unless the sub-agent explicitly provides an api config.

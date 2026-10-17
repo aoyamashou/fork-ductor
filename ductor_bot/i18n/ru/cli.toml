@@ -1,6 +1,4 @@
-# Русские строки CLI (Rich-форматирование, вывод в терминале).
-
-# -- Команда status ------------------------------------------------------------
+# ru interface strings
 
 [status]
 running = "[bold green]Работает[/bold green]  pid={pid}  аптайм: {uptime}"
@@ -13,17 +11,9 @@ errors_none = "Ошибки:    [green]0[/green]"
 paths_header = "[bold]Пути:[/bold]"
 not_configured = "[bold yellow]Не настроено.[/bold yellow]\n\nВыполни [bold]ductor[/bold], чтобы запустить мастер настройки."
 
-# -- Валидация конфига ---------------------------------------------------------
-
 [config]
 incomplete = "[bold yellow]Конфиг неполный. Выполни [bold]ductor onboarding[/bold].[/bold yellow]"
-matrix_no_homeserver = "[bold yellow]Требуется URL Matrix homeserver.{hint}[/bold yellow]"
-matrix_no_user = "[bold yellow]Требуется Matrix user_id.{hint}[/bold yellow]"
-matrix_no_auth = "[bold yellow]Требуется пароль или access_token Matrix.{hint}[/bold yellow]"
-matrix_no_target = "[bold yellow]Нужен хотя бы один allowed_room или allowed_user.{hint}[/bold yellow]"
 onboarding_hint = " Выполни [bold]ductor onboarding[/bold] для перенастройки."
-
-# -- Жизненный цикл -----------------------------------------------------------
 
 [lifecycle]
 stopping_docker = "[dim]Остановка Docker-контейнера '{name}'...[/dim]"
@@ -35,12 +25,7 @@ no_instance = "[dim]Работающий экземпляр бота не най
 
 [lifecycle.uninstall]
 title = "[bold red]Удаление ductor[/bold red]"
-body = """\
-[bold red]Это полностью удалит ductor из твоей системы.[/bold red]\n
-  1. Остановить работающего бота (если активен)
-  2. Удалить Docker-контейнер и образ (если используется)
-  3. Удалить все данные в ~/.ductor/
-  4. Деинсталлировать пакет ductor"""
+body = "[bold red]Это полностью удалит ductor из твоей системы.[/bold red]\n\n  1. Остановить работающего бота (если активен)\n  2. Удалить Docker-контейнер и образ (если используется)\n  3. Удалить все данные в ~/.ductor/\n  4. Деинсталлировать пакет ductor"
 confirm = "Ты уверен, что хочешь всё удалить?"
 cancelled = "[dim]Удаление отменено.[/dim]"
 removing_image = "[dim]Удаление Docker-образа '{image}'...[/dim]"
@@ -53,21 +38,13 @@ done_body = "[bold green]ductor полностью удалён.[/bold green]\n\
 
 [lifecycle.upgrade]
 dev_title = "[bold yellow]Dev-установка[/bold yellow]"
-dev_body = """\
-[bold yellow]Запущено из исходников (editable install).[/bold yellow]\n
-Автообновление недоступно.
-Обновляй через [bold]git pull[/bold] в каталоге проекта."""
+dev_body = "[bold yellow]Запущено из исходников (editable install).[/bold yellow]\n\nАвтообновление недоступно.\nОбновляй через [bold]git pull[/bold] в каталоге проекта."
 title = "[bold cyan]Обновление ductor...[/bold cyan]"
-body = """\
-  1. Корректно остановить бота
-  2. Обновить до последней версии
-  3. Перезапустить"""
+body = "1. Корректно остановить бота\n  2. Обновить до последней версии\n  3. Перезапустить"
 upgrading = "[dim]Обновление пакета...[/dim]"
 complete = "[green]Обновление завершено: {old} -> {new}[/green]"
 unchanged = "[bold yellow]Версия не изменилась после обновления ({version}).[/bold yellow]\nАвтоматический повтор был выполнен, но новая версия не подтверждена."
 restarting = "[dim]Перезапуск...[/dim]"
-
-# -- Команды Docker ------------------------------------------------------------
 
 [docker]
 config_not_found = "[bold red]Конфиг не найден. Сначала запусти ductor.[/bold red]"
@@ -121,8 +98,6 @@ removed = "[green]Удалён:[/green] {name}"
 rebuild_hint = "[yellow]Выполни 'ductor docker rebuild' для применения.[/yellow]"
 dep_warning = "[yellow]Внимание: {dependents} зависят от {name}.[/yellow]"
 
-# -- Команды службы ------------------------------------------------------------
-
 [service]
 not_installed = "[dim]Служба не установлена. Выполни [bold]ductor service install[/bold].[/dim]"
 not_running = "[dim]Служба не работает.[/dim]"
@@ -136,22 +111,7 @@ stop_failed = "[red]Не удалось остановить: {error}[/red]"
 
 [service.install]
 title = "Фоновая служба ductor"
-body = """\
-[bold green]ductor теперь работает как фоновая служба.[/bold green]\n
-{detail}\n
-[bold]Полезные команды:[/bold]\n
-  [cyan]ductor service status[/cyan]     Проверить работает ли
-  [cyan]ductor service stop[/cyan]       Остановить службу
-  [cyan]ductor service logs[/cyan]       {logs_hint}
-  [cyan]ductor service uninstall[/cyan]  Удалить службу"""
-
-[service.linux]
-no_systemd = "[bold red]systemd не найден. Установка службы требует Linux с systemd.[/bold red]"
-linger_warning = "[bold yellow]Linger должен быть включён, чтобы ductor продолжал работать после выхода из системы.[/bold yellow]"
-linger_enabled = "[green]Linger включён.[/green]"
-linger_manual = "[yellow]Не удалось включить linger автоматически.[/yellow]\nВыполни вручную: [bold]sudo loginctl enable-linger {user}[/bold]"
-start_failed = "[bold red]Не удалось запустить службу:[/bold red] {error}"
-detail = "Запускается при загрузке и автоматически перезапускается при сбое."
+body = "[bold green]ductor теперь работает как фоновая служба.[/bold green]\n\n{detail}\n\n[bold]Полезные команды:[/bold]\n\n  [cyan]ductor service status[/cyan]     Проверить работает ли\n  [cyan]ductor service stop[/cyan]       Остановить службу\n  [cyan]ductor service logs[/cyan]       {logs_hint}\n  [cyan]ductor service uninstall[/cyan]  Удалить службу"
 
 [service.macos]
 no_launchctl = "[bold red]launchctl не найден. Установка службы требует macOS.[/bold red]"
@@ -159,22 +119,6 @@ start_failed = "[bold red]Не удалось загрузить Launch Agent:[/
 detail = "Запускается при входе и перезапускается при сбое (задержка 10с)."
 unload_failed = "[red]Не удалось выгрузить агент: {error}[/red]"
 not_loaded = "[red]Агент не загружен. Попробуй: [bold]ductor service install[/bold][/red]"
-
-[service.windows]
-admin_title = "[bold yellow]Требуются права администратора[/bold yellow]"
-admin_body = """\
-[bold yellow]Требуются права администратора.[/bold yellow]\n
-Открой терминал от имени администратора и попробуй снова:\n
-  [bold]1.[/bold] Правый клик по CMD или PowerShell
-  [bold]2.[/bold] Выбери [cyan]'Запуск от имени администратора'[/cyan]
-  [bold]3.[/bold] Выполни: [cyan]ductor service install[/cyan]"""
-no_scheduler = "[bold red]Планировщик задач недоступен. Установка службы требует Windows.[/bold red]"
-no_pythonw = "[dim]Примечание: pythonw.exe не найден. Может быть видно окно консоли.[/dim]"
-create_failed = "[bold red]Не удалось создать запланированную задачу:[/bold red] {error}"
-start_failed = "[bold red]Задача создана, но не удалось запустить:[/bold red] {error}"
-remove_failed = "[red]Не удалось удалить задачу: {error}[/red]"
-detail = "Запускается через 10с после входа и перезапускается при сбое (до 3 попыток, интервал 1 мин.)."
-query_failed = "[red]Не удалось запросить статус задачи: {error}[/red]"
 
 [service.logs]
 no_logs = "[dim]Лог-файлы не найдены.[/dim]"
@@ -185,8 +129,6 @@ not_installed = "[dim]Служба не установлена.[/dim]"
 streaming = "[dim]Просмотр логов (Ctrl+C для выхода)...[/dim]"
 no_journalctl = "[bold red]journalctl не найден.[/bold red]"
 
-# -- Команды API ---------------------------------------------------------------
-
 [api]
 title = "[bold]Команды API[/bold] [dim](бета)[/dim]"
 status_not_configured = "[dim]не настроен[/dim]"
@@ -195,26 +137,14 @@ status_disabled = "[dim]отключён[/dim]"
 
 [api.missing_dep]
 title = "[bold]Отсутствует зависимость[/bold]"
-body = """\
-[bold yellow]PyNaCl необходим для API-сервера (E2E-шифрование).[/bold yellow]\n
-Установи его:\n
-  [bold]{hint}[/bold]\n
-Затем выполни [bold]ductor api enable[/bold] снова."""
+body = "[bold yellow]PyNaCl необходим для API-сервера (E2E-шифрование).[/bold yellow]\n\nУстанови его:\n\n  [bold]{hint}[/bold]\n\nЗатем выполни [bold]ductor api enable[/bold] снова."
 
 [api.enabled]
 title = "[bold]API-сервер[/bold] [dim](бета)[/dim]"
-body = """\
-[bold green]API-сервер включён.[/bold green]\n
-  Host:   [cyan]{host}[/cyan]
-  Port:   [cyan]{port}[/cyan]
-  Token:  [cyan]{token}[/cyan]\n
-[dim]Перезапусти бота для запуска API-сервера.[/dim]
-[dim]Предназначен для использования с Tailscale или другими частными сетями.[/dim]"""
+body = "[bold green]API-сервер включён.[/bold green]\n\n  Host:   [cyan]{host}[/cyan]\n  Port:   [cyan]{port}[/cyan]\n  Token:  [cyan]{token}[/cyan]\n\n[dim]Перезапусти бота для запуска API-сервера.[/dim]\n[dim]Предназначен для использования с Tailscale или другими частными сетями.[/dim]"
 
 [api.disabled]
 status = "API-сервер: [dim]отключён[/dim]"
-
-# -- Команды агентов -----------------------------------------------------------
 
 [agents]
 col_agent = "Агент"
@@ -249,8 +179,6 @@ confirm = "Удалить агента '{name}'? (Данные рабочего 
 done = "[green]Агент '{name}' удалён из agents.json.[/green]"
 data_hint = "[dim]Данные рабочего пространства остаются в {path}[/dim]"
 
-# -- Установка extras ----------------------------------------------------------
-
 [install]
 already = "[green]✓[/green] {description} уже установлен."
 installing = "Установка {description}..."
@@ -262,8 +190,6 @@ col_description = "Описание"
 col_status = "Статус"
 status_installed = "[green]установлен[/green]"
 status_not_installed = "[dim]не установлен[/dim]"
-
-# -- Таблица помощи ------------------------------------------------------------
 
 [help]
 col_command = "Команда"
@@ -280,7 +206,7 @@ service = "Управление службой (status/stop/logs/...)"
 agents = "Управление суб-агентами (list/add/remove)"
 docker = "Управление Docker (rebuild/enable/disable)"
 api = "Управление API-сервером (enable/disable) [бета]"
-install = "Установка доп. пакетов (matrix, api)"
+install = "Установка доп. пакетов (api)"
 status = "Статус бота, пути и агенты"
 help = "Показать это сообщение"
 verbose = "Подробный вывод логов"

@@ -1,0 +1,95 @@
+# 简体中文界面文案
+
+[common]
+cancelled = "[dim]设置已取消。[/dim]"
+subtitle = "ductor · Telegram 智能体"
+
+[cli_backends]
+title = "模型 CLI"
+header = "[bold]检测到的模型 CLI：[/bold]\n"
+claude = "  Claude Code CLI   {status}"
+codex = "  OpenAI Codex CLI  {status}"
+gemini = "  Google Gemini CLI {status}"
+antigravity = "  Antigravity CLI   {status}"
+grok = "  xAI Grok CLI      {status}"
+no_auth = "[bold red]至少需要安装并登录一个模型 CLI。[/bold red]"
+claude_check_failed = "[yellow]Claude 授权检查失败：{error}，已跳过。[/yellow]"
+codex_check_failed = "[yellow]Codex 身份验证检查失败：{error}，已跳过。[/yellow]"
+gemini_check_failed = "[yellow]Gemini 身份验证检查失败：{error}，已跳过。[/yellow]"
+antigravity_check_failed = "[yellow]Antigravity验证检查失败：{error}，已跳过。[/yellow]"
+grok_check_failed = "[yellow]Grok 身份验证检查失败：{error}，已跳过。[/yellow]"
+
+[disclaimer]
+title = "[bold yellow]使用前须知[/bold yellow]"
+body = "[bold]继续之前请先阅读。[/bold]\n\nductor 会通过已安装的官方模型 CLI 执行任务。\n\n当前默认权限模式允许智能体读写和删除文件、运行命令，且无需逐项确认。误操作可能造成数据丢失或意外修改。\n\n[bold green]建议启用 Docker 沙箱，限制智能体对宿主机的访问。[/bold green]"
+confirm = "我了解风险并继续"
+
+[telegram.token]
+title = "[bold]Telegram Bot Token[/bold]"
+body = "[bold]获取 Bot Token：[/bold]\n\n  1. 在 Telegram 中打开 [bold cyan]@BotFather[/bold cyan]\n  2. 发送 [bold]/newbot[/bold] 并按提示创建机器人\n  3. 复制 BotFather 返回的 Token"
+prompt = "粘贴 Bot Token："
+error = "[red]令牌格式无效。预期：数字：字母数字（例如 123456:ABC-xyz）[/red]"
+
+[telegram.user_id]
+title = "[bold]Telegram 用户 ID[/bold]"
+body = "[bold]查询用户 ID：[/bold]\n\n  1. 在 Telegram 中打开 [bold cyan]@userinfobot[/bold cyan]\n  2. 发送 [bold]/start[/bold]\n  3. 复制回复中的数字 ID\n\n[dim]机器人只接受白名单用户的消息。[/dim]"
+prompt = "输入数字用户 ID："
+error_nan = "[red]请输入有效号码。[/red]"
+error_negative = "[red]用户ID必须是正数。[/red]"
+
+[docker]
+title = "[bold]Docker 沙箱[/bold]"
+found_body = "[bold green]检测到 Docker。[/bold green]\n\n启用后，模型 CLI 会在隔离的容器中运行。"
+found_prompt = "启用 Docker 沙箱？"
+not_found_body = "[bold yellow]未找到 Docker。[/bold yellow]\n\n可稍后安装 Docker 并启用沙箱。"
+
+[docker.extras]
+title = "[bold]可选的 Docker 软件包[/bold]"
+col_package = "软件包"
+col_description = "用途"
+col_size = "大小"
+prompt = "选择附加功能（空格键切换，回车键确认）："
+hint = "[dim]额外软件包会增加镜像构建时间。可稍后用 ductor docker extras-add 或 extras-remove 修改。[/dim]"
+auto_deps = "[dim]自动添加依赖项：{names}[/dim]"
+
+[timezone]
+title = "[bold]时区[/bold]"
+body = "时区用于定时任务、心跳静默时段和每日会话重置。"
+prompt = "选择您的时区："
+manual_prompt = "输入 IANA 时区，例如 Asia/Shanghai："
+error = "[red]未知时区：{tz}[/red]"
+
+[service]
+title = "[bold]后台服务[/bold]"
+body = "[bold]将 ductor 作为后台服务运行？[/bold]\n\n这会创建 macOS {mechanism}，在用户 {trigger} 后启动，并在异常退出后重启。"
+prompt = "安装并启动后台服务？"
+
+[complete]
+title = "[bold green]准备就绪[/bold green]"
+header = "[bold green]设置完成！[/bold green]"
+files_header = "[bold]ductor 数据文件：[/bold]"
+home = "数据目录：[cyan]{path}[/cyan]"
+config = "配置：[cyan]{path}[/cyan]"
+workspace = "工作区：[cyan]{path}[/cyan]"
+logs = "日志：[cyan]{path}[/cyan]"
+installing_service = "正在安装服务..."
+starting_bot = "启动机器人..."
+
+[reset]
+title = "[bold yellow]检测到现有设置[/bold yellow]"
+body = "[bold yellow]已有配置。[/bold yellow]\n\n重新运行向导将[bold red]清除数据[/bold red]：\n\n  [dim]{home}[/dim] 将被删除。\n  会话、配置、记忆和定时任务均会丢失。"
+
+[reset.docker]
+title = "[bold]Docker清理[/bold]"
+body = "[bold]Docker 沙箱已在您当前的配置中启用。[/bold]\n\n  容器：[cyan]{container}[/cyan]\n  镜像：[cyan]{image}[/cyan]"
+prompt = "删除 Docker 容器和镜像？"
+removing = "[dim]正在删除 Docker 资源...[/dim]"
+done = "[green]Docker 清理完成。[/green]"
+
+[reset.confirm]
+prompt = "删除所有内容并重新开始？"
+deleted = "[dim]工作空间已删除。[/dim]"
+warning = "[yellow]警告：无法完全删除{home}。手动删除。[/yellow]"
+
+[language]
+prompt = "选择界面语言："

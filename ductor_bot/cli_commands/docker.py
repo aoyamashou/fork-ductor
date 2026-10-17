@@ -65,17 +65,17 @@ def print_docker_help() -> None:
     table = Table(show_header=False, box=None, padding=(0, 2))
     table.add_column(style="bold green", min_width=36)
     table.add_column()
-    table.add_row("ductor docker rebuild", "Remove container & image, rebuild on next start")
-    table.add_row("ductor docker enable", "Enable Docker sandboxing")
-    table.add_row("ductor docker disable", "Disable Docker sandboxing")
-    table.add_row("ductor docker mount <path>", "Mount a host directory into the sandbox")
-    table.add_row("ductor docker unmount <path>", "Remove a mounted directory")
-    table.add_row("ductor docker mounts", "List all mounted directories")
-    table.add_row("ductor docker extras", "List available and installed extras")
-    table.add_row("ductor docker extras-add <id>", "Add an extra package")
-    table.add_row("ductor docker extras-remove <id>", "Remove an extra package")
+    table.add_row("ductor docker rebuild", "删除容器与镜像。下次启动时重建")
+    table.add_row("ductor docker enable", "启用 Docker 沙箱")
+    table.add_row("ductor docker disable", "停用 Docker 沙箱")
+    table.add_row("ductor docker mount <path>", "将主机目录挂载到沙箱")
+    table.add_row("ductor docker unmount <path>", "移除目录挂载")
+    table.add_row("ductor docker mounts", "列出所有挂载目录")
+    table.add_row("ductor docker extras", "列出可用及已安装的软件包")
+    table.add_row("ductor docker extras-add <id>", "添加软件包")
+    table.add_row("ductor docker extras-remove <id>", "移除软件包")
     _console.print(
-        Panel(table, title="[bold]Docker Commands[/bold]", border_style="blue", padding=(1, 0)),
+        Panel(table, title="[bold]Docker 命令[/bold]", border_style="blue", padding=(1, 0)),
     )
     _console.print()
 
@@ -312,9 +312,9 @@ def docker_list_mounts() -> None:
     from ductor_bot.infra.docker import resolve_mount_target
 
     table = Table(show_header=True, box=None, padding=(0, 2))
-    table.add_column("Host Path", style="bold")
-    table.add_column("Container Path", style="cyan")
-    table.add_column("Status")
+    table.add_column("主机路径", style="bold")
+    table.add_column("容器路径", style="cyan")
+    table.add_column("状态")
 
     used_names: set[str] = set()
     for entry in mounts:

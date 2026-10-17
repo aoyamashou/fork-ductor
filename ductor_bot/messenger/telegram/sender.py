@@ -291,7 +291,7 @@ async def send_file(
         logger.exception("Failed to send file: %s", path)
         await bot.send_message(
             chat_id=chat_id,
-            text=f"[Failed to send: {path.name}]",
+            text=f"[发送失败:{path.name}]",
             parse_mode=None,
             message_thread_id=thread_id,
         )
@@ -299,7 +299,7 @@ async def send_file(
         logger.exception("Telegram rejected file upload: %s", path)
         await bot.send_message(
             chat_id=chat_id,
-            text=f"[Failed to send: {path.name}]",
+            text=f"[发送失败:{path.name}]",
             parse_mode=None,
             message_thread_id=thread_id,
         )

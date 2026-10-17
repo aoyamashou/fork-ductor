@@ -250,7 +250,7 @@ class SequentialMiddleware(BaseMiddleware):
         for entry in entries:
             if entry.entry_id == entry_id and not entry.cancelled:
                 entry.cancelled = True
-                await self._edit_indicator(chat_id, entry, "<i>[Message cancelled.]</i>")
+                await self._edit_indicator(chat_id, entry, "<i>[消息已取消。]</i>")
                 logger.info("Queue entry cancelled chat=%d entry=%d", chat_id, entry_id)
                 return True
         return False
@@ -265,7 +265,7 @@ class SequentialMiddleware(BaseMiddleware):
         for entry in entries:
             if not entry.cancelled:
                 entry.cancelled = True
-                await self._edit_indicator(chat_id, entry, "<i>[Message discarded.]</i>")
+                await self._edit_indicator(chat_id, entry, "<i>[消息已丢弃。]</i>")
                 count += 1
         logger.info("Queue drained chat=%d discarded=%d", chat_id, count)
         return count
@@ -413,7 +413,7 @@ class SequentialMiddleware(BaseMiddleware):
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
-                        text="Cancel message",
+                        text="取消消息",
                         callback_data=f"{MQ_PREFIX}{entry.entry_id}",
                     )
                 ]
@@ -422,7 +422,7 @@ class SequentialMiddleware(BaseMiddleware):
         try:
             sent = await self._bot.send_message(
                 chat_id,
-                "<i>[Message in queue...]</i>",
+                "<i>[消息正在排队……]</i>",
                 parse_mode=ParseMode.HTML,
                 reply_parameters=ReplyParameters(
                     message_id=event.message_id,

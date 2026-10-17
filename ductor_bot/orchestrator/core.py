@@ -370,10 +370,10 @@ class Orchestrator:
             raise
         except (CLIError, StreamError, SessionError, CronError, WebhookError, WorkspaceError):
             logger.exception("Domain error in handle_message")
-            return OrchestratorResult(text="An internal error occurred. Please try again.")
+            return OrchestratorResult(text="内部错误,请重试。")
         except (OSError, RuntimeError, ValueError, TypeError, KeyError):
             logger.exception("Unexpected error in handle_message")
-            return OrchestratorResult(text="An internal error occurred. Please try again.")
+            return OrchestratorResult(text="内部错误,请重试。")
 
     async def _route_message(self, dispatch: _MessageDispatch) -> OrchestratorResult:
         result = await self._command_registry.dispatch(

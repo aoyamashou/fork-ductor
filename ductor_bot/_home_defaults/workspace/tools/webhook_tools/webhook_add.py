@@ -79,7 +79,7 @@ HMAC ADVANCED (only when --auth-mode hmac):
                       Example for Stripe: "v1=([a-f0-9]+)"
   --hmac-payload-prefix-regex
                       Regex on header value; group 1 is prepended to body with "." separator
-                      before HMAC computation. Used by Stripe/Slack where signed content is
+                      before HMAC computation. Used by services where signed content is
                       "{timestamp}.{body}". Example for Stripe: "t=(\\d+)"
 
 AUTH MODES:

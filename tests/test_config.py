@@ -195,41 +195,15 @@ def test_transport_backward_compat_populates_transports() -> None:
     assert cfg.transport == "telegram"
 
 
-def test_transport_matrix_backward_compat() -> None:
-    """transport='matrix' with empty transports normalizes correctly."""
-    cfg = AgentConfig(transport="matrix")
-    assert cfg.transports == ["matrix"]
-    assert cfg.transport == "matrix"
 
 
-def test_transport_slack_backward_compat() -> None:
-    """transport='slack' with empty transports normalizes correctly."""
-    cfg = AgentConfig(transport="slack")
-    assert cfg.transports == ["slack"]
-    assert cfg.transport == "slack"
 
 
-def test_transports_multi_sets_primary_transport() -> None:
-    """Explicit multi-transport sets ``transport`` to first entry."""
-    cfg = AgentConfig(transports=["telegram", "matrix"])
-    assert cfg.transports == ["telegram", "matrix"]
-    assert cfg.transport == "telegram"
-
-
-def test_transports_multi_reversed_order() -> None:
-    """Primary transport is always the first in the list."""
-    cfg = AgentConfig(transports=["matrix", "telegram"])
-    assert cfg.transport == "matrix"
-
-
-def test_is_multi_transport_single() -> None:
-    cfg = AgentConfig(transport="telegram")
-    assert cfg.is_multi_transport is False
-
-
-def test_is_multi_transport_multiple() -> None:
-    cfg = AgentConfig(transports=["telegram", "matrix"])
-    assert cfg.is_multi_transport is True
+def test_non_telegram_transport_rejected() -> None:
+    with pytest.raises(ValidationError, match="telegram"):
+        AgentConfig(transport="matrix")
+    with pytest.raises(ValidationError, match="Telegram"):
+        AgentConfig(transports=["telegram", "slack"])
 
 
 def test_transports_default_is_telegram() -> None:

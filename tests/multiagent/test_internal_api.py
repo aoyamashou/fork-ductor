@@ -104,8 +104,7 @@ class TestHandleSendAsync:
 
     def test_normalise_transport_aliases(self) -> None:
         assert _normalise_transport("telegram") == "tg"
-        assert _normalise_transport("matrix") == "mx"
-        assert _normalise_transport("mx") == "mx"
+        assert _normalise_transport("TELEGRAM") == "tg"
 
     async def test_send_async_unknown_recipient(self, client: TestClient) -> None:
         resp = await client.post(

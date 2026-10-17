@@ -52,7 +52,7 @@ CHANGES:
   --dependency "<name>"      Resource dependency for sequential execution (e.g. 'chrome_browser')
   --chat-id <id>             Redirect delivery to this chat ID
   --topic-id <id>            Redirect delivery to this forum topic (thread) ID
-  --transport <tg|mx>        Delivery transport: 'tg' (Telegram) or 'mx' (Matrix)
+  --transport <tg>           Delivery transport: Telegram
   --clear-topic-id           Route to the chat's main thread instead of a topic
   --silent-on-success        Suppress the push on success (errors still delivered)
   --no-silent-on-success     Always deliver results, even on success (default)
@@ -142,8 +142,8 @@ def _parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--transport",
-        choices=["tg", "mx"],
-        help="Delivery transport: 'tg' (Telegram) or 'mx' (Matrix).",
+        choices=["tg"],
+        help="Delivery transport: Telegram (tg).",
     )
     parser.add_argument(
         "--clear-topic-id",

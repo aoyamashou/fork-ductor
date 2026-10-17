@@ -84,10 +84,6 @@ class DuctorPaths:
         return self.workspace / "telegram_files"
 
     @property
-    def matrix_files_dir(self) -> Path:
-        return self.workspace / "matrix_files"
-
-    @property
     def api_files_dir(self) -> Path:
         return self.workspace / "api_files"
 

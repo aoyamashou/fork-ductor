@@ -161,6 +161,7 @@ def install_service(console: Console | None = None) -> bool:
     print_install_success(
         console,
         detail=t_rich("service.macos.detail"),
+        logs_hint="查看最近日志",
     )
     return True
 

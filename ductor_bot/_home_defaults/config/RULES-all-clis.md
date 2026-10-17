@@ -129,7 +129,7 @@ Parameters are inserted before the `--` separator in commands.
 
 ### Scene Indicators
 
-- `scene.seen_reaction`: `true`/`false` (default `false`) — show a 👀 reaction on received messages (Telegram: emoji reaction, Matrix: read receipt)
+- `scene.seen_reaction`: `true`/`false` (default `false`) — show a 👀 reaction on received messages (Telegram emoji reaction)
 - `scene.technical_footer`: `true`/`false` (default `false`) — append model name, token count, cost, and duration to the final response
 - Hot-reloadable.
 

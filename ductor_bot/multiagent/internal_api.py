@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-_TRANSPORT_ALIASES = {"telegram": "tg", "matrix": "mx"}
+_TRANSPORT_ALIASES = {"telegram": "tg"}
 
 
 def _normalise_transport(value: str) -> str:

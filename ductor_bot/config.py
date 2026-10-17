@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
+from typing import Literal
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic import BaseModel, Field, field_validator, model_validator
@@ -210,28 +211,6 @@ class CLIParametersConfig(BaseModel):
     grok: list[str] = Field(default_factory=list)
 
 
-class MatrixConfig(BaseModel):
-    """Matrix homeserver connection settings."""
-
-    homeserver: str = ""  # https://matrix.myserver.com
-    user_id: str = ""  # @ductor:myserver.com
-    password: str = ""  # for initial login
-    access_token: str = ""  # persisted after first login
-    device_id: str = ""  # persisted after first login
-    allowed_rooms: list[str] = Field(default_factory=list)  # ["!abc:server", "#room:server"]
-    allowed_users: list[str] = Field(default_factory=list)  # ["@user:server"]
-    store_path: str = "matrix_store"  # relative to ductor_home
-
-
-class SlackConfig(BaseModel):
-    """Slack Socket Mode settings."""
-
-    bot_token: str = ""
-    app_token: str = ""
-    allowed_channels: list[str] = Field(default_factory=list)
-    allowed_users: list[str] = Field(default_factory=list)
-
-
 class TasksConfig(BaseModel):
     """Settings for background task delegation."""
 
@@ -299,7 +278,7 @@ class TranscriptionConfig(BaseModel):
 class NotificationTarget(BaseModel):
     """A chat/topic to route startup or upgrade notifications to (#64).
 
-    ``topic_id`` is Telegram-specific (forum-topic thread). Matrix ignores it.
+    ``topic_id`` identifies a Telegram forum topic.
     """
 
     enabled: bool = True
@@ -464,18 +443,16 @@ class AgentConfig(BaseModel):
     transcription: TranscriptionConfig = Field(default_factory=TranscriptionConfig)
     skills: SkillsConfig = Field(default_factory=SkillsConfig)
     user_timezone: str = ""
-    language: str = "en"
+    language: str = "zh-CN"
     update_check: bool = True
     group_mention_only: bool = False
     interagent_port: int = 8799
-    transport: str = "telegram"  # "telegram" | "matrix" | "slack"
+    transport: Literal["telegram"] = "telegram"
     transports: list[str] = Field(default_factory=list)
     telegram_token: str = ""
     allowed_user_ids: list[int] = Field(default_factory=list)
     allowed_group_ids: list[int] = Field(default_factory=list)
     allowed_channel_ids: list[int] = Field(default_factory=list)
-    matrix: MatrixConfig = Field(default_factory=MatrixConfig)
-    slack: SlackConfig = Field(default_factory=SlackConfig)
 
     @field_validator("gemini_api_key", mode="before")
     @classmethod
@@ -501,15 +478,11 @@ class AgentConfig(BaseModel):
 
     @model_validator(mode="after")
     def _normalize_transports(self) -> AgentConfig:
-        """Normalize ``transports`` and ``transport`` for backward compat.
-
-        - Empty ``transports`` → populated from ``transport`` (single-transport).
-        - Non-empty ``transports`` → ``transport`` set to first entry (primary).
-        """
+        """Accept Telegram as the sole messaging transport."""
         if not self.transports:
-            self.transports = [self.transport]
-        else:
-            self.transport = self.transports[0]
+            self.transports = ["telegram"]
+        if self.transports != ["telegram"]:
+            raise ValueError("Only Telegram transport is supported")
         return self
 
     @property

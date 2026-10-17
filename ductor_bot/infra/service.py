@@ -1,20 +1,10 @@
-"""Platform-dispatching service management for ductor.
-
-On Linux: delegates to systemd user service (service_linux).
-On Windows: delegates to Windows Task Scheduler (service_windows).
-"""
+"""macOS launchd service management for ductor."""
 
 from __future__ import annotations
 
-import sys
 from typing import TYPE_CHECKING
 
-if sys.platform == "win32":
-    from ductor_bot.infra import service_windows as _backend
-elif sys.platform == "darwin":
-    from ductor_bot.infra import service_macos as _backend
-else:
-    from ductor_bot.infra import service_linux as _backend
+from ductor_bot.infra import service_macos as _backend
 
 if TYPE_CHECKING:
     from rich.console import Console

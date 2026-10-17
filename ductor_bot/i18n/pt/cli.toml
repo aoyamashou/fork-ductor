@@ -1,6 +1,4 @@
-# Strings de CLI em Português (Rich-formatadas, exibidas no terminal).
-
-# -- Comando de status ---------------------------------------------------------
+# pt interface strings
 
 [status]
 running = "[bold green]Rodando[/bold green]  pid={pid}  tempo ativo: {uptime}"
@@ -13,17 +11,9 @@ errors_none = "Erros:     [green]0[/green]"
 paths_header = "[bold]Caminhos:[/bold]"
 not_configured = "[bold yellow]Não configurado.[/bold yellow]\n\nExecute [bold]ductor[/bold] para iniciar o assistente de configuração."
 
-# -- Validação de config -------------------------------------------------------
-
 [config]
 incomplete = "[bold yellow]Config está incompleta. Execute [bold]ductor onboarding[/bold].[/bold yellow]"
-matrix_no_homeserver = "[bold yellow]URL do homeserver Matrix é obrigatória.{hint}[/bold yellow]"
-matrix_no_user = "[bold yellow]user_id do Matrix é obrigatório.{hint}[/bold yellow]"
-matrix_no_auth = "[bold yellow]Senha ou access_token do Matrix é obrigatório.{hint}[/bold yellow]"
-matrix_no_target = "[bold yellow]Pelo menos um allowed_room ou allowed_user é obrigatório.{hint}[/bold yellow]"
 onboarding_hint = " Execute [bold]ductor onboarding[/bold] para reconfigurar."
-
-# -- Ciclo de vida -------------------------------------------------------------
 
 [lifecycle]
 stopping_docker = "[dim]Parando container Docker '{name}'...[/dim]"
@@ -35,12 +25,7 @@ no_instance = "[dim]Nenhuma instância do bot em execução encontrada.[/dim]"
 
 [lifecycle.uninstall]
 title = "[bold red]Desinstalar ductor[/bold red]"
-body = """\
-[bold red]Isso vai remover permanentemente o ductor do seu sistema.[/bold red]\n
-  1. Parar o bot em execução (se ativo)
-  2. Remover container e imagem Docker (se utilizado)
-  3. Excluir todos os dados em ~/.ductor/
-  4. Desinstalar o pacote ductor"""
+body = "[bold red]Isso vai remover permanentemente o ductor do seu sistema.[/bold red]\n\n  1. Parar o bot em execução (se ativo)\n  2. Remover container e imagem Docker (se utilizado)\n  3. Excluir todos os dados em ~/.ductor/\n  4. Desinstalar o pacote ductor"
 confirm = "Tem certeza de que deseja desinstalar tudo?"
 cancelled = "[dim]Desinstalação cancelada.[/dim]"
 removing_image = "[dim]Removendo imagem Docker '{image}'...[/dim]"
@@ -53,21 +38,13 @@ done_body = "[bold green]ductor foi completamente removido.[/bold green]\n\nObri
 
 [lifecycle.upgrade]
 dev_title = "[bold yellow]Instalação de Desenvolvimento[/bold yellow]"
-dev_body = """\
-[bold yellow]Executando a partir do código-fonte (instalação editável).[/bold yellow]\n
-Self-upgrade não está disponível.
-Atualize com [bold]git pull[/bold] no diretório do projeto."""
+dev_body = "[bold yellow]Executando a partir do código-fonte (instalação editável).[/bold yellow]\n\nSelf-upgrade não está disponível.\nAtualize com [bold]git pull[/bold] no diretório do projeto."
 title = "[bold cyan]Atualizando ductor...[/bold cyan]"
-body = """\
-  1. Parar bot em execução de forma graceful
-  2. Atualizar para a versão mais recente
-  3. Reiniciar"""
+body = "1. Parar bot em execução de forma graceful\n  2. Atualizar para a versão mais recente\n  3. Reiniciar"
 upgrading = "[dim]Atualizando pacote...[/dim]"
 complete = "[green]Upgrade concluído: {old} -> {new}[/green]"
 unchanged = "[bold yellow]Versão inalterada após upgrade ({version}).[/bold yellow]\nTentativa automática foi realizada, mas nenhuma nova versão instalada pôde ser verificada ainda."
 restarting = "[dim]Reiniciando...[/dim]"
-
-# -- Comandos Docker -----------------------------------------------------------
 
 [docker]
 config_not_found = "[bold red]Config não encontrada. Execute ductor primeiro.[/bold red]"
@@ -121,8 +98,6 @@ removed = "[green]Removido:[/green] {name}"
 rebuild_hint = "[yellow]Execute 'ductor docker rebuild' para aplicar.[/yellow]"
 dep_warning = "[yellow]Aviso: {dependents} dependem de {name}.[/yellow]"
 
-# -- Comandos de serviço -------------------------------------------------------
-
 [service]
 not_installed = "[dim]Serviço não instalado. Execute [bold]ductor service install[/bold].[/dim]"
 not_running = "[dim]Serviço não está rodando.[/dim]"
@@ -136,22 +111,7 @@ stop_failed = "[red]Falha ao parar: {error}[/red]"
 
 [service.install]
 title = "Serviço em segundo plano do ductor"
-body = """\
-[bold green]ductor agora está rodando como serviço em segundo plano.[/bold green]\n
-{detail}\n
-[bold]Comandos úteis:[/bold]\n
-  [cyan]ductor service status[/cyan]     Verificar se está rodando
-  [cyan]ductor service stop[/cyan]       Parar o serviço
-  [cyan]ductor service logs[/cyan]       {logs_hint}
-  [cyan]ductor service uninstall[/cyan]  Remover o serviço"""
-
-[service.linux]
-no_systemd = "[bold red]systemd não encontrado. Instalação de serviço requer Linux com systemd.[/bold red]"
-linger_warning = "[bold yellow]Linger precisa estar habilitado para que o ductor continue rodando após o logout.[/bold yellow]"
-linger_enabled = "[green]Linger habilitado.[/green]"
-linger_manual = "[yellow]Não foi possível habilitar linger automaticamente.[/yellow]\nExecute manualmente: [bold]sudo loginctl enable-linger {user}[/bold]"
-start_failed = "[bold red]Falha ao iniciar serviço:[/bold red] {error}"
-detail = "Inicia no boot e reinicia automaticamente em caso de crash."
+body = "[bold green]ductor agora está rodando como serviço em segundo plano.[/bold green]\n\n{detail}\n\n[bold]Comandos úteis:[/bold]\n\n  [cyan]ductor service status[/cyan]     Verificar se está rodando\n  [cyan]ductor service stop[/cyan]       Parar o serviço\n  [cyan]ductor service logs[/cyan]       {logs_hint}\n  [cyan]ductor service uninstall[/cyan]  Remover o serviço"
 
 [service.macos]
 no_launchctl = "[bold red]launchctl não encontrado. Instalação de serviço requer macOS.[/bold red]"
@@ -159,22 +119,6 @@ start_failed = "[bold red]Falha ao carregar Launch Agent:[/bold red] {error}"
 detail = "Inicia no login e reinicia em caso de crash (throttle de 10s)."
 unload_failed = "[red]Falha ao descarregar agente: {error}[/red]"
 not_loaded = "[red]Agente não carregado. Tente: [bold]ductor service install[/bold][/red]"
-
-[service.windows]
-admin_title = "[bold yellow]Administrador Necessário[/bold yellow]"
-admin_body = """\
-[bold yellow]Privilégios de administrador necessários.[/bold yellow]\n
-Abra um terminal como Administrador e tente novamente:\n
-  [bold]1.[/bold] Clique com o botão direito no CMD ou PowerShell
-  [bold]2.[/bold] Selecione [cyan]'Executar como administrador'[/cyan]
-  [bold]3.[/bold] Execute: [cyan]ductor service install[/cyan]"""
-no_scheduler = "[bold red]Agendador de Tarefas não disponível. Instalação de serviço requer Windows.[/bold red]"
-no_pythonw = "[dim]Nota: pythonw.exe não encontrado. Uma janela de console pode ficar visível.[/dim]"
-create_failed = "[bold red]Falha ao criar tarefa agendada:[/bold red] {error}"
-start_failed = "[bold red]Tarefa criada mas falha ao iniciar:[/bold red] {error}"
-remove_failed = "[red]Falha ao remover tarefa: {error}[/red]"
-detail = "Inicia 10s após o login e reinicia em caso de crash (até 3 tentativas, 1 min de intervalo)."
-query_failed = "[red]Não foi possível consultar o status da tarefa: {error}[/red]"
 
 [service.logs]
 no_logs = "[dim]Nenhum arquivo de log encontrado.[/dim]"
@@ -185,8 +129,6 @@ not_installed = "[dim]Serviço não instalado.[/dim]"
 streaming = "[dim]Mostrando logs (Ctrl+C para parar)...[/dim]"
 no_journalctl = "[bold red]journalctl não encontrado.[/bold red]"
 
-# -- Comandos de API -----------------------------------------------------------
-
 [api]
 title = "[bold]Comandos de API[/bold] [dim](beta)[/dim]"
 status_not_configured = "[dim]não configurado[/dim]"
@@ -195,26 +137,14 @@ status_disabled = "[dim]desabilitado[/dim]"
 
 [api.missing_dep]
 title = "[bold]Dependência ausente[/bold]"
-body = """\
-[bold yellow]PyNaCl é necessário para o servidor API (criptografia E2E).[/bold yellow]\n
-Instale com:\n
-  [bold]{hint}[/bold]\n
-Depois execute [bold]ductor api enable[/bold] novamente."""
+body = "[bold yellow]PyNaCl é necessário para o servidor API (criptografia E2E).[/bold yellow]\n\nInstale com:\n\n  [bold]{hint}[/bold]\n\nDepois execute [bold]ductor api enable[/bold] novamente."
 
 [api.enabled]
 title = "[bold]Servidor API[/bold] [dim](beta)[/dim]"
-body = """\
-[bold green]Servidor API habilitado.[/bold green]\n
-  Host:   [cyan]{host}[/cyan]
-  Porta:  [cyan]{port}[/cyan]
-  Token:  [cyan]{token}[/cyan]\n
-[dim]Reinicie o bot para iniciar o servidor API.[/dim]
-[dim]Projetado para uso com Tailscale ou outras redes privadas.[/dim]"""
+body = "[bold green]Servidor API habilitado.[/bold green]\n\n  Host:   [cyan]{host}[/cyan]\n  Porta:  [cyan]{port}[/cyan]\n  Token:  [cyan]{token}[/cyan]\n\n[dim]Reinicie o bot para iniciar o servidor API.[/dim]\n[dim]Projetado para uso com Tailscale ou outras redes privadas.[/dim]"
 
 [api.disabled]
 status = "Servidor API: [dim]desabilitado[/dim]"
-
-# -- Comandos de agente --------------------------------------------------------
 
 [agents]
 col_agent = "Agente"
@@ -249,8 +179,6 @@ confirm = "Remover agente '{name}'? (Os dados do workspace não serão excluído
 done = "[green]Agente '{name}' removido do agents.json.[/green]"
 data_hint = "[dim]Dados do workspace permanecem em {path}[/dim]"
 
-# -- Instalar extras -----------------------------------------------------------
-
 [install]
 already = "[green]✓[/green] {description} já está instalado."
 installing = "Instalando {description}..."
@@ -262,8 +190,6 @@ col_description = "Descrição"
 col_status = "Status"
 status_installed = "[green]instalado[/green]"
 status_not_installed = "[dim]não instalado[/dim]"
-
-# -- Tabela de ajuda -----------------------------------------------------------
 
 [help]
 col_command = "Comando"
@@ -280,7 +206,7 @@ service = "Gerenciamento de serviço (status/stop/logs/...)"
 agents = "Gerenciamento de sub-agentes (list/add/remove)"
 docker = "Gerenciamento Docker (rebuild/enable/disable)"
 api = "Gerenciamento do servidor API (enable/disable) [beta]"
-install = "Instalar extras opcionais (matrix, api)"
+install = "Instalar extras opcionais (api)"
 status = "Mostrar status do bot, caminhos e agentes"
 help = "Mostrar esta mensagem"
 verbose = "Saída de log detalhada"

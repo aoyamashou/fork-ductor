@@ -1,4 +1,4 @@
-# Deskripsi perintah bot (maks 22 karakter untuk klien Telegram mobile).
+# id interface strings
 
 [bot]
 new = "Mulai obrolan baru"

@@ -146,7 +146,7 @@ async def resolve_media_text(
         info = await download_media(bot, message, telegram_files_dir)
     except (TelegramAPIError, OSError):
         logger.exception("Failed to download media from chat=%d", message.chat.id)
-        await message.answer("Could not download that file.")
+        await message.answer("文件下载失败。")
         return None
 
     if info is None:

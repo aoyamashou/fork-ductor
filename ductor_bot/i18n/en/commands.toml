@@ -1,4 +1,4 @@
-# Bot command descriptions (≤22 chars for Telegram mobile clients).
+# en interface strings
 
 [bot]
 new = "Start new chat"

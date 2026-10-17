@@ -33,14 +33,14 @@ def print_service_help() -> None:
     table = Table(show_header=False, box=None, padding=(0, 2))
     table.add_column(style="bold green", min_width=30)
     table.add_column()
-    table.add_row("ductor service install", "Install and start background service")
-    table.add_row("ductor service status", "Show service status")
-    table.add_row("ductor service start", "Start the service")
-    table.add_row("ductor service stop", "Stop the service")
-    table.add_row("ductor service logs", "View live logs")
-    table.add_row("ductor service uninstall", "Remove the service")
+    table.add_row("ductor service install", "安装并启动后台服务")
+    table.add_row("ductor service status", "查看服务状态")
+    table.add_row("ductor service start", "启动服务")
+    table.add_row("ductor service stop", "停止服务")
+    table.add_row("ductor service logs", "查看服务日志")
+    table.add_row("ductor service uninstall", "卸载后台服务")
     _console.print(
-        Panel(table, title="[bold]Service Commands[/bold]", border_style="blue", padding=(1, 0)),
+        Panel(table, title="[bold]后台服务命令[/bold]", border_style="blue", padding=(1, 0)),
     )
     _console.print()
 

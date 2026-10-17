@@ -43,7 +43,7 @@ class AsyncSendOptions:
     *summary*: notification preview shown in the recipient's Telegram chat.
     *chat_id* / *topic_id*: originating transport chat/topic context so
     that results are delivered back to the correct thread.
-    *transport*: short transport id (``"tg"`` / ``"mx"``) for multi-transport
+    *transport*: short transport id (``"tg"``) for Telegram
     result routing.
     """
 

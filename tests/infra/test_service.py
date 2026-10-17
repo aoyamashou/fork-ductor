@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import importlib
-import sys
 from types import SimpleNamespace
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
@@ -14,30 +12,8 @@ if TYPE_CHECKING:
     import pytest
 
 
-def _reload_for_platform(platform: str) -> str:
-    original = sys.platform
-    try:
-        sys.platform = platform
-        mod = importlib.reload(service)
-        return mod._backend.__name__
-    finally:
-        sys.platform = original
-        importlib.reload(service)
-
-
-def test_dispatch_imports_windows_backend() -> None:
-    backend_name = _reload_for_platform("win32")
-    assert backend_name.endswith("service_windows")
-
-
-def test_dispatch_imports_macos_backend() -> None:
-    backend_name = _reload_for_platform("darwin")
-    assert backend_name.endswith("service_macos")
-
-
-def test_dispatch_imports_linux_backend() -> None:
-    backend_name = _reload_for_platform("linux")
-    assert backend_name.endswith("service_linux")
+def test_uses_macos_backend() -> None:
+    assert service._backend.__name__.endswith("service_macos")
 
 
 def test_facade_delegates_all_operations(monkeypatch: pytest.MonkeyPatch) -> None:

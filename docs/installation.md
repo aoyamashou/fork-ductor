@@ -1,328 +1,72 @@
-# Installation Guide
+# 在 macOS Apple Silicon 上安装
 
-## Requirements
+## 一键安装
 
-1. Python 3.11+
-2. `pipx` (recommended) or `pip`
-3. At least one authenticated provider CLI:
-   - Claude Code CLI: `npm install -g @anthropic-ai/claude-code && claude auth`
-   - Codex CLI: `npm install -g @openai/codex && codex auth`
-   - Gemini CLI: `npm install -g @google/gemini-cli` and authenticate in `gemini`.
-     Note: since 2026-06-18 Gemini CLI no longer serves requests for individual
-     Google accounts (free/Pro/Ultra) — it requires an API key or a Gemini Code
-     Assist license. For the free individual tier, use Antigravity (`agy`) instead.
-4. One of these messaging transports:
-    - **Telegram**: Bot token from [@BotFather](https://t.me/BotFather) + user ID from [@userinfobot](https://t.me/userinfobot)
-    - **Matrix**: install Matrix support first (`ductor install matrix` or `pip install \"ductor[matrix]\"`), then provide homeserver URL, user ID, and password/access token
-    - **Slack**: install Slack support first (`pip install "ductor[slack]"`), then create a Slack app with Socket Mode, the bot/app scopes below, and provide bot/app tokens plus Slack member/channel IDs for the allowlist
-5. Docker optional (recommended for sandboxing)
-
-## Install
-
-### pipx (recommended)
+此分支推送到 `aoyamashou/fork-ductor` 的 `main` 分支后，在 Mac 的终端运行：
 
 ```bash
-pipx install ductor
+curl -fsSL https://raw.githubusercontent.com/aoyamashou/fork-ductor/main/scripts/install.sh | bash
 ```
 
-### pip
+脚本只接受 macOS Apple Silicon（arm64）。它会自动安装 uv 和 Python 3.13，从你的仓库下载源码并构建安装包，使用 `uv tool` 安装。已有配置会先备份到 `~/.ductor/backups/`，Telegram 配置会切换为简体中文，然后用 launchd 启动；新用户会进入中文向导。脚本运行时需要网络连接和终端交互。以后更新也可以重新运行同一命令。
+
+安装完成后检查：
 
 ```bash
-pip install ductor
-```
-
-### from source
-
-```bash
-git clone https://github.com/PleasePrompto/ductor.git
-cd ductor
-python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev]"
-```
-
-## First run
-
-```bash
-ductor
-```
-
-On first run, onboarding does:
-
-- checks Claude/Codex/Gemini/Antigravity auth status,
-- asks which transport to use (Telegram, Matrix, or Slack),
-- collects transport credentials,
-- asks timezone,
-- offers Docker sandboxing (with optional AI/ML package selection),
-- offers service install,
-- writes config and seeds `~/.ductor/`.
-
-Multiple transports can run in parallel (e.g. Telegram + Slack
-simultaneously). After initial setup, configure the `transports` array
-in `config.json`. See [config.md](config.md) for details.
-
-If service install succeeds, onboarding returns without starting foreground bot.
-
-## Slack setup
-
-ductor's Slack transport uses **Slack Bolt + Socket Mode** — no public webhook URL is needed.
-
-```bash
-pip install "ductor[slack]"   # or: ductor install slack
-```
-
-You need a Slack app with Socket Mode, the required bot scopes and event subscriptions, plus a bot token (`xoxb-...`) and app-level token (`xapp-...`) for `slack.bot_token` / `slack.app_token`.
-
-Full step-by-step guide (app creation, scopes, events, config, troubleshooting): [`docs/slack-setup.md`](slack-setup.md)
-
-## Platform notes
-
-### Linux
-
-```bash
-sudo apt update && sudo apt install python3 python3-pip python3-venv nodejs npm
-pip install pipx
-pipx ensurepath
-pipx install ductor
-ductor
-```
-
-Optional Docker:
-
-```bash
-sudo apt install docker.io
-sudo usermod -aG docker $USER
-```
-
-### macOS
-
-```bash
-brew install python@3.11 node pipx
-pipx ensurepath
-pipx install ductor
-ductor
-```
-
-### Windows (native)
-
-```powershell
-winget install Python.Python.3.11
-winget install OpenJS.NodeJS
-pip install pipx
-pipx ensurepath
-pipx install ductor
-ductor
-```
-
-Native Windows is fully supported, including service management via Task Scheduler.
-
-### Windows (WSL)
-
-WSL works too. Install like Linux inside WSL.
-
-```bash
-sudo apt update && sudo apt install python3 python3-pip python3-venv nodejs npm
-pip install pipx
-pipx ensurepath
-pipx install ductor
-ductor
-```
-
-## Docker sandboxing
-
-Enable in config:
-
-```json
-{
-  "docker": {
-    "enabled": true
-  }
-}
-```
-
-Notes:
-
-- Docker image is built on first use when missing.
-- Container is reused between calls.
-- On Linux, ductor maps UID/GID to avoid root-owned files.
-- If Docker setup fails at startup, ductor logs warning and falls back to host execution.
-
-Docker CLI shortcuts:
-
-```bash
-ductor docker enable
-ductor docker disable
-ductor docker rebuild
-ductor docker mount /path/to/project
-ductor docker unmount /path/to/project
-ductor docker mounts
-ductor docker extras
-ductor docker extras-add <id>
-ductor docker extras-remove <id>
-```
-
-- `enable` / `disable` toggles `docker.enabled` in `config.json` (restart bot afterwards).
-- `rebuild` stops the bot, removes container + image, and forces fresh build on next start.
-- `mount` / `unmount` manage `docker.mounts` entries.
-- mounts are available in-container under `/mnt/<name>` (basename-based mapping with collision suffixes).
-- run `ductor docker mounts` to inspect effective mapping and broken paths.
-- `extras` lists all optional packages with their selection status.
-- `extras-add` / `extras-remove` manage optional AI/ML packages (Whisper, PyTorch, OpenCV, etc.) in `config.json`. Transitive dependencies are resolved automatically.
-- after changing extras, run `ductor docker rebuild` to apply. Build output is streamed live to the terminal.
-
-## Direct API server (optional)
-
-Preferred enable path:
-
-```bash
-ductor api enable
-```
-
-This writes/updates the `api` block in `config.json` and generates a token if missing.
-
-`ductor api enable` requires PyNaCl (used for E2E encryption against the direct API). PyNaCl is **only needed when the direct WebSocket API is enabled** — the core bot, Telegram, and Matrix transports run without it. If it is missing:
-
-```bash
-# pipx install
-pipx inject ductor PyNaCl
-
-# pip install
-pip install "ductor[api]"
-```
-
-Manual config equivalent:
-
-```json
-{
-  "api": {
-    "enabled": true,
-    "host": "0.0.0.0",
-    "port": 8741,
-    "token": "",
-    "chat_id": 0,
-    "allow_public": false
-  }
-}
-```
-
-Notes:
-
-- token is generated and persisted by `ductor api enable` (runtime also generates it on API start if still empty).
-- WebSocket auth frame must include `type="auth"`, `token`, and `e2e_pk` (client ephemeral public key).
-- endpoints:
-  - WebSocket: `ws://<host>:8741/ws`
-  - health: `GET /health`
-  - file download: `GET /files?path=...` (Bearer token)
-  - file upload: `POST /upload` (Bearer token, multipart)
-- default API session uses `api.chat_id` by truthiness (`0` falls back), else first `allowed_user_ids` entry (fallback `1`); clients can override `chat_id` in auth payload.
-- recommended deployment is a private network (for example Tailscale).
-
-## Background service
-
-Install:
-
-```bash
-ductor service install
-```
-
-Manage:
-
-```bash
-ductor service status
-ductor service start
-ductor service stop
+ductor status
 ductor service logs
-ductor service uninstall
 ```
 
-Backend details and platform quirks: [Service Management](modules/service_management.md)
+若终端提示找不到 `ductor`，请新开一个终端，或运行 `export PATH="$HOME/.local/bin:$PATH"`。
 
-Backends:
+## 前提
 
-- Linux: `systemd --user` service `~/.config/systemd/user/ductor.service`
-- macOS: Launch Agent `~/Library/LaunchAgents/dev.ductor.plist`
-- Windows: Task Scheduler task `ductor`
+- macOS Apple Silicon（arm64）。
+- Python 3.11 或更新版本，建议 3.13。
+- 已安装并登录至少一个官方 CLI：`claude`、`codex`、`gemini`、`agy` 或 `grok`。
+- Telegram Bot Token 和你的 Telegram 数字用户 ID。
 
-Linux note:
-
-- user services survive logout/start on boot only when user linger is enabled (`sudo loginctl enable-linger <user>`). Installer attempts this and prints a hint when it cannot set linger.
-
-Windows note:
-
-- service install prefers `pythonw.exe -m ductor_bot` (no visible console window),
-- installed Task Scheduler service uses logon trigger + restart-on-failure retries,
-- some systems require elevated terminal permissions for Task Scheduler operations.
-
-Log command behavior:
-
-- Linux: live `journalctl --user -u ductor -f`
-- macOS/Windows: recent lines from `~/.ductor/logs/agent.log` (fallback newest `*.log`)
-
-## VPS notes
-
-Small Linux VPS is enough. Typical path:
+## 从源码运行（开发）
 
 ```bash
-ssh user@host
-sudo apt update && sudo apt install python3 python3-pip python3-venv nodejs npm docker.io
-pip install pipx
-pipx ensurepath
-pipx install ductor
-ductor
+brew install uv
+uv python install 3.13
+uv sync --python 3.13 --extra dev
+uv run ductor
 ```
 
-Security basics:
+首次运行会打开向导。向导检查模型 CLI 的登录状态，然后依次收集 Telegram Bot Token、允许访问的用户 ID、Docker 选项、时区和后台服务选项。Token 可通过 `@BotFather` 的 `/newbot` 创建；用户 ID 可向 `@userinfobot` 发送 `/start` 查询。
 
-- keep SSH key-only auth
-- enable Docker sandboxing for unattended automation
-- keep `allowed_user_ids` restricted
-- use `/upgrade` or `pipx upgrade ductor`
+机器人默认只接受 `allowed_user_ids` 中的用户。需要在群组使用时，还应把群组 ID 加入 `allowed_group_ids`。所有配置保存在 `~/.ductor/config/config.json`。
 
-## Troubleshooting
+## 后台服务
 
-### Bot not responding
-
-1. check transport credentials (`telegram_token` / `matrix` block) + allowlists
-2. run `ductor status`
-3. inspect `~/.ductor/logs/agent.log`
-4. run `/diagnose` in chat
-
-### CLI installed but not authenticated
-
-Authenticate at least one provider and restart:
+项目使用 macOS 的 launchd Launch Agent。在向导中选择后台运行，或手动执行：
 
 ```bash
-claude auth
-# or
-codex auth
-# or
-# authenticate in gemini CLI
+uv run ductor service install
+uv run ductor service status
+uv run ductor service logs
 ```
 
-### Docker enabled but not running
+服务会在用户登录后启动，并在异常退出后重启。停止或卸载服务：
 
 ```bash
-docker info
+uv run ductor service stop
+uv run ductor service uninstall
 ```
 
-Then validate `docker.enabled` + image/container names in config.
+## Docker 隔离
 
-### Webhooks not arriving
+向导可启用 Docker 沙箱，让模型 CLI 在容器中执行。若要访问宿主机项目目录，可使用 `ductor docker mount <路径>`；修改挂载后重启或重建容器。也可以在 `config.json` 中设置 `docker.enabled` 和 `docker.mounts`。
 
-- set `webhooks.enabled: true`
-- expose `127.0.0.1:8742` through tunnel/proxy when external sender is used
-- verify auth settings and hook ID
+## 常见问题
 
-## Upgrade and uninstall
+- **机器人未回复**：先运行 `uv run ductor status`，再查看 `uv run ductor service logs`；检查 Token、用户 ID、CLI 登录状态。
+- **找不到模型 CLI**：确认启动 launchd 服务时使用的账户及 PATH 能访问该 CLI。
+- **修改配置不生效**：模型、语言、用户白名单等字段支持热更新；Token、Docker 和 API 设置需要重启。
+- **Python 依赖安装失败**：使用 `uv python install 3.13`，再用 `uv sync --python 3.13 --extra dev` 重建环境。
 
-Upgrade:
+## 升级与移除
 
-```bash
-pipx upgrade ductor
-```
-
-Uninstall:
-
-```bash
-pipx uninstall ductor
-rm -rf ~/.ductor  # optional data removal
-```
+通过一键脚本安装时，重新执行上述 `curl` 命令即可升级到仓库 `main` 分支的最新代码；避免使用 `ductor upgrade`，以免改装成上游发布版。从源码开发时，使用 Git 更新代码并重新同步依赖。删除服务和本地数据前，先备份 `~/.ductor/`；`ductor reset` 与 `ductor uninstall` 都可能清除数据。

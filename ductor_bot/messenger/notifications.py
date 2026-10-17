@@ -10,7 +10,7 @@ class NotificationService(Protocol):
     """Transport-agnostic notification delivery.
 
     Implemented by both TelegramNotificationService and
-    MatrixNotificationService so the supervisor and bus can send
+    the notification service so the supervisor and bus can send
     notifications without knowing which transport is active.
     """
 

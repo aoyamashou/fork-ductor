@@ -1,0 +1,28 @@
+# 简体中文界面文案
+
+[bot]
+new = "开启新会话"
+reset = "重置当前会话"
+stop = "停止任务并清空队列"
+interrupt = "中断任务，保留队列"
+model = "查看或切换模型"
+effort = "设置推理强度"
+status = "查看会话状态"
+memory = "查看主记忆"
+session = "管理后台会话"
+tasks = "管理后台任务"
+cron = "管理定时任务"
+agent_commands = "管理多智能体"
+showfiles = "浏览文件"
+info = "查看项目资料"
+help = "查看所有命令"
+diagnose = "系统诊断"
+upgrade = "检查更新"
+restart = "重启机器人"
+
+[multiagent]
+agents = "列出所有智能体"
+agent_start = "启动子智能体"
+agent_stop = "停止子智能体"
+agent_restart = "重启子智能体"
+stop_all = "停止所有任务"

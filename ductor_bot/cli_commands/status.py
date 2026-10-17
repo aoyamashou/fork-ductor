@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import sys
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -14,7 +13,6 @@ from rich.table import Table
 from rich.text import Text
 
 from ductor_bot.i18n import t_rich
-from ductor_bot.infra.platform import is_windows
 from ductor_bot.workspace.paths import DuctorPaths, resolve_paths
 
 _console = Console()
@@ -52,11 +50,11 @@ def build_status_lines(status: StatusSummary, *, paths: DuctorPaths) -> list[str
         lines.append(t_rich("status.errors_none"))
     lines.append("")
     lines.append(t_rich("status.paths_header"))
-    lines.append(f"  Home:       [cyan]{paths.ductor_home}[/cyan]")
-    lines.append(f"  Config:     [cyan]{paths.config_path}[/cyan]")
-    lines.append(f"  Workspace:  [cyan]{paths.workspace}[/cyan]")
-    lines.append(f"  Logs:       [cyan]{paths.logs_dir}[/cyan]")
-    lines.append(f"  Sessions:   [cyan]{paths.sessions_path}[/cyan]")
+    lines.append(f"  数据目录:  [cyan]{paths.ductor_home}[/cyan]")
+    lines.append(f"  配置:      [cyan]{paths.config_path}[/cyan]")
+    lines.append(f"  工作区:    [cyan]{paths.workspace}[/cyan]")
+    lines.append(f"  日志:      [cyan]{paths.logs_dir}[/cyan]")
+    lines.append(f"  会话:      [cyan]{paths.sessions_path}[/cyan]")
     return lines
 
 
@@ -116,7 +114,7 @@ def print_status() -> None:
                 delta = datetime.now(UTC) - mtime
                 hours, remainder = divmod(int(delta.total_seconds()), 3600)
                 minutes, _ = divmod(remainder, 60)
-                bot_uptime = f"{hours}h {minutes}m"
+                bot_uptime = f"{hours} 小时 {minutes} 分钟"
 
     # Error count from latest log
     error_count = count_log_errors(paths.logs_dir)
@@ -137,7 +135,7 @@ def print_status() -> None:
     _console.print(
         Panel(
             "\n".join(lines),
-            title="[bold]Status — main[/bold]",
+            title="[bold]状态 — 主智能体[/bold]",
             border_style="green",
             padding=(1, 2),
         ),
@@ -178,8 +176,7 @@ def print_usage() -> None:
     table.add_row("ductor reset", t_rich("help.reset"))
     table.add_row("ductor upgrade", t_rich("help.upgrade"))
     table.add_row("ductor uninstall", t_rich("help.uninstall"))
-    is_macos = sys.platform == "darwin"
-    svc_hint = "Task Scheduler" if is_windows() else ("launchd" if is_macos else "systemd")
+    svc_hint = "launchd"
     table.add_row("ductor service install", t_rich("help.service_install", hint=svc_hint))
     table.add_row("ductor service", t_rich("help.service"))
     table.add_row("ductor agents", t_rich("help.agents"))
@@ -191,7 +188,7 @@ def print_usage() -> None:
     table.add_row("-v, --verbose", t_rich("help.verbose"))
 
     _console.print(
-        Panel(table, title="[bold]Commands[/bold]", border_style="blue", padding=(1, 0)),
+        Panel(table, title="[bold]命令[/bold]", border_style="blue", padding=(1, 0)),
     )
 
     if _is_configured():
@@ -200,7 +197,7 @@ def print_usage() -> None:
         _console.print(
             Panel(
                 t_rich("status.not_configured"),
-                title="[bold]Status[/bold]",
+                title="[bold]状态[/bold]",
                 border_style="yellow",
                 padding=(1, 2),
             ),

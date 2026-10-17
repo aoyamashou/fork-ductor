@@ -20,7 +20,6 @@ _DUCTOR_HOME = Path(
 
 _MEDIA_DIRS = (
     _DUCTOR_HOME / "workspace" / "telegram_files",
-    _DUCTOR_HOME / "workspace" / "matrix_files",
     _DUCTOR_HOME / "workspace" / "api_files",
 )
 

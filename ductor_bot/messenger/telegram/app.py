@@ -809,7 +809,7 @@ class TelegramBot:
                         text="GitHub", url="https://github.com/PleasePrompto/ductor"
                     ),
                     InlineKeyboardButton(
-                        text="Changelog",
+                        text="更新记录",
                         url="https://github.com/PleasePrompto/ductor/releases",
                     ),
                 ],

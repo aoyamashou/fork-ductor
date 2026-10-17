@@ -9,8 +9,7 @@ from dataclasses import dataclass
 class SessionKey:
     """Composite session identifier: transport + chat + optional topic/channel.
 
-    ``transport`` identifies the messaging backend (``"tg"`` for Telegram,
-    ``"mx"`` for Matrix, ``"api"`` for the WebSocket API, etc.).
+    ``transport`` identifies Telegram (``"tg"``) or the direct API (``"api"``).
 
     For Telegram forum topics, ``topic_id`` is ``message_thread_id``.
     For the WebSocket API, ``topic_id`` maps to ``channel_id``.
@@ -42,11 +41,6 @@ class SessionKey:
     def telegram(cls, chat_id: int, topic_id: int | None = None) -> SessionKey:
         """Create a Telegram session key."""
         return cls(transport="tg", chat_id=chat_id, topic_id=topic_id)
-
-    @classmethod
-    def matrix(cls, chat_id: int) -> SessionKey:
-        """Create a Matrix session key."""
-        return cls(transport="mx", chat_id=chat_id)
 
     @classmethod
     def parse(cls, raw: str) -> SessionKey:

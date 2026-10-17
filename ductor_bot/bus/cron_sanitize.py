@@ -1,6 +1,6 @@
 """Shared cron result sanitisation logic.
 
-Used by both Telegram and Matrix transport adapters to strip
+Used by the Telegram transport adapter to strip
 transport-level acknowledgement lines from cron output.
 """
 

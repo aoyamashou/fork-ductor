@@ -16,13 +16,7 @@ class TestStorageKey:
         key = SessionKey(transport="tg", chat_id=123, topic_id=45)
         assert key.storage_key == "tg:123:45"
 
-    def test_matrix_flat(self) -> None:
-        key = SessionKey(transport="mx", chat_id=999)
-        assert key.storage_key == "mx:999"
 
-    def test_matrix_with_topic(self) -> None:
-        key = SessionKey(transport="mx", chat_id=42, topic_id=7)
-        assert key.storage_key == "mx:42:7"
 
     def test_default_transport_is_telegram(self) -> None:
         key = SessionKey(chat_id=123)
@@ -43,9 +37,6 @@ class TestParse:
         key = SessionKey.parse("tg:123")
         assert key == SessionKey(transport="tg", chat_id=123)
 
-    def test_prefixed_matrix(self) -> None:
-        key = SessionKey.parse("mx:999")
-        assert key == SessionKey(transport="mx", chat_id=999)
 
     def test_prefixed_with_topic(self) -> None:
         key = SessionKey.parse("tg:123:45")
@@ -129,13 +120,7 @@ class TestFactoryMethods:
         assert key.chat_id == -100123
         assert key.topic_id == 7
 
-    def test_matrix_flat(self) -> None:
-        key = SessionKey.matrix(chat_id=999)
-        assert key == SessionKey(transport="mx", chat_id=999)
 
-    def test_matrix_no_topic(self) -> None:
-        key = SessionKey.matrix(chat_id=42)
-        assert key.topic_id is None
 
     def test_for_transport_generic(self) -> None:
         key = SessionKey.for_transport("api", chat_id=1, topic_id=5)
@@ -150,7 +135,6 @@ class TestFactoryMethods:
         cases = [
             SessionKey.telegram(chat_id=123),
             SessionKey.telegram(chat_id=123, topic_id=45),
-            SessionKey.matrix(chat_id=999),
             SessionKey.for_transport("api", chat_id=1, topic_id=5),
         ]
         for key in cases:
@@ -165,7 +149,7 @@ class TestFactoryMethods:
         keys = {
             SessionKey.telegram(chat_id=1),
             SessionKey.telegram(chat_id=1),
-            SessionKey.matrix(chat_id=1),
+            SessionKey.for_transport("api", chat_id=1),
         }
         assert len(keys) == 2
 

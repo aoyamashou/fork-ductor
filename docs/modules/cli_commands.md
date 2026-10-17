@@ -1,48 +1,7 @@
-# cli_commands/
+# 终端命令
 
-CLI command implementation package extracted from `__main__.py`.
+主要代码：`ductor_bot/cli_commands/`。
 
-## Files
+终端命令包含安装向导、状态、停止、重启、升级、服务、Docker、API 和子智能体管理。`ductor_bot/__main__.py` 只负责分派与启动。
 
-- `cli_commands/lifecycle.py`: `start_bot`, `stop_bot`, `cmd_restart`, `upgrade`, `uninstall`, `_re_exec_bot`
-- `cli_commands/status.py`: `print_status`, `print_usage`
-- `cli_commands/service.py`: `ductor service ...`
-- `cli_commands/docker.py`: `ductor docker ...`
-- `cli_commands/api_cmd.py`: `ductor api ...`
-- `cli_commands/agents.py`: `ductor agents ...`
-- `cli_commands/install.py`: `ductor install <extra>`
-
-## Role in runtime
-
-`ductor_bot/__main__.py` is now a thin entrypoint:
-
-- argument parsing + command dispatch
-- config helpers (`_is_configured`, `load_config`, `run_bot`)
-- imports/re-exports command handlers from `cli_commands/*`
-
-This keeps lifecycle logic testable and prevents command monolith growth.
-
-## Command groups
-
-- lifecycle: `ductor`, `stop`, `restart`, `upgrade`, `uninstall`, onboarding/reset flow
-- status/help/version: `ductor status`, `ductor help`, `ductor --version` / `-V`
-- service: install/status/start/stop/logs/uninstall wrapper for platform backends
-- docker: enable/disable/rebuild/mount/unmount/mounts/extras/extras-add/extras-remove
-- api: enable/disable direct WebSocket API block in config
-- agents: list/add/remove sub-agent entries in `agents.json`
-- install extras: `ductor install <extra>` for optional Python extras (`matrix`, `api`)
-
-## Notable behavior details
-
-- `stop_bot()` stops service first, then PID instance, then remaining ductor processes, then Docker container (if enabled).
-- `start_bot()` calls `load_config()` and starts `AgentSupervisor` via `run_bot()`.
-- `ductor agents add <name>` is an interactive Telegram-focused scaffold; Matrix sub-agents are configured via `agents.json` or the bundled agent tool scripts.
-- `ductor restart` always runs `stop_bot()` and then re-execs the current process.
-- `ductor --version` / `-V` exits immediately from `__main__.py` without touching config loading or runtime startup.
-- exit code `42` is the in-app runtime/supervisor restart signal (`/restart`, service-managed restarts), not the behavior of the CLI `ductor restart` command.
-- `status.py` currently counts errors from latest `ductor*.log`; runtime primary log file is `~/.ductor/logs/agent.log`.
-
-## Why this matters for docs
-
-When documenting CLI behavior, reference `cli_commands/*` for command internals.
-Use `__main__.py` as the dispatch map, not as the implementation source.
+相关操作与配置见 [配置说明](../config.md)、[系统概览](../system_overview.md) 和 [Telegram 命令帮助](../help.md)。

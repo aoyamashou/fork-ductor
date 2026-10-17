@@ -94,33 +94,33 @@ class TelegramTransport:
     def _format_named_session(env: Envelope, elapsed: str) -> str:
         name = env.session_name
         if env.status == "aborted":
-            return fmt(f"**[{name}] Cancelled**", SEP, f"_{env.prompt_preview}_")
+            return fmt(f"**[{name}] 已取消**", SEP, f"_{env.prompt_preview}_")
         if env.is_error:
-            body = env.result_text[:2000] if env.result_text else "_No output._"
-            return fmt(f"**[{name}] Failed** ({elapsed})", SEP, body)
-        return fmt(f"**[{name}] Complete** ({elapsed})", SEP, env.result_text or "_No output._")
+            body = env.result_text[:2000] if env.result_text else "_没有输出。_"
+            return fmt(f"**[{name}] 失败** ({elapsed})", SEP, body)
+        return fmt(f"**[{name}] 已完成** ({elapsed})", SEP, env.result_text or "_没有输出。_")
 
     @staticmethod
     def _format_stateless(env: Envelope, elapsed: str) -> str:
         task_id = env.metadata.get("task_id", "?")
         if env.status == "aborted":
             return fmt(
-                "**Background Task Cancelled**",
+                "**后台任务已取消**",
                 SEP,
-                f"Task `{task_id}` was cancelled.\nPrompt: _{env.prompt_preview}_",
+                f"任务 `{task_id}` 已取消。\n请求: _{env.prompt_preview}_",
             )
         if env.is_error:
             return fmt(
-                f"**Background Task Failed** ({elapsed})",
+                f"**后台任务失败** ({elapsed})",
                 SEP,
-                f"Task `{task_id}` failed ({env.status}).\n"
-                f"Prompt: _{env.prompt_preview}_\n\n"
-                + (env.result_text[:2000] if env.result_text else "_No output._"),
+                f"任务 `{task_id}` 失败 ({env.status})。\n"
+                f"请求: _{env.prompt_preview}_\n\n"
+                + (env.result_text[:2000] if env.result_text else "_没有输出。_"),
             )
         return fmt(
-            f"**Background Task Complete** ({elapsed})",
+            f"**后台任务已完成** ({elapsed})",
             SEP,
-            env.result_text or "_No output._",
+            env.result_text or "_没有输出。_",
         )
 
     async def _deliver_heartbeat(self, env: Envelope) -> None:
@@ -132,13 +132,13 @@ class TelegramTransport:
             await send_rich(self._bot.bot_instance, env.chat_id, env.result_text, opts)
             logger.info("Heartbeat delivered")
         except TelegramAPIError:
-            target = f"Chat {env.chat_id}"
+            target = f"聊天 {env.chat_id}"
             if env.topic_id:
-                target += f" / Topic {env.topic_id}"
+                target += f" / 话题 {env.topic_id}"
             logger.warning("Heartbeat delivery failed for %s, falling back to main user", target)
             fallback_text = (
-                f"**Heartbeat delivery failed**\n\n"
-                f"Could not deliver to {target}.\n\n"
+                f"**心跳消息投递失败**\n\n"
+                f"无法向 {target} 投递。\n\n"
                 f"---\n{env.result_text}"
             )
             fallback_id = self._bot._config.allowed_user_ids[0]
@@ -154,12 +154,12 @@ class TelegramTransport:
         opts = self._opts(env)
 
         if env.is_error:
-            session_info = f"\nSession: `{env.session_name}`" if env.session_name else ""
+            session_info = f"\n会话: `{env.session_name}`" if env.session_name else ""
             error_text = (
-                f"**Inter-Agent Request Failed**\n\n"
-                f"Agent: `{env.metadata.get('recipient', '?')}`{session_info}\n"
-                f"Error: {env.metadata.get('error', 'unknown')}\n"
-                f"Request: _{env.prompt_preview}_"
+                f"**智能体间请求失败**\n\n"
+                f"智能体: `{env.metadata.get('recipient', '?')}`{session_info}\n"
+                f"错误: {env.metadata.get('error', 'unknown')}\n"
+                f"请求: _{env.prompt_preview}_"
             )
             await send_rich(self._bot.bot_instance, env.chat_id, error_text, opts)
             return
@@ -170,7 +170,7 @@ class TelegramTransport:
             await send_rich(
                 self._bot.bot_instance,
                 env.chat_id,
-                f"**Provider Switch Detected**\n\n{notice}",
+                f"**检测到模型提供商切换**\n\n{notice}",
                 opts,
             )
 
@@ -189,11 +189,11 @@ class TelegramTransport:
             duration = f"{env.elapsed_seconds:.0f}s"
             target = f"{env.provider}/{env.model}" if env.provider else ""
             detail = f"{duration}, {target}" if target else duration
-            note = f"**Task `{name}` completed** ({detail})"
+            note = f"**任务 `{name}` 已完成** ({detail})"
         elif env.status == "cancelled":
-            note = f"**Task `{name}` cancelled**"
+            note = f"**任务 `{name}` 已取消**"
         elif env.status == "failed":
-            note = f"**Task `{name}` failed**\nReason: {env.metadata.get('error', 'unknown')}"
+            note = f"**任务 `{name}` 失败**\n原因: {env.metadata.get('error', 'unknown')}"
 
         if note:
             await send_rich(self._bot.bot_instance, env.chat_id, note, opts)
@@ -208,7 +208,7 @@ class TelegramTransport:
         task_id = env.metadata.get("task_id", "?")
 
         # 1. Notification
-        note = f"**Task `{task_id}` has a question:**\n{env.prompt}"
+        note = f"**任务 `{task_id}` 有一个问题:**\n{env.prompt}"
         await send_rich(self._bot.bot_instance, env.chat_id, note, opts)
 
         # 2. Agent response (filled by bus injection)
@@ -236,9 +236,9 @@ class TelegramTransport:
             )
             return
         text = (
-            f"**TASK: {title}**\n\n{clean_result}"
+            f"**定时任务: {title}**\n\n{clean_result}"
             if clean_result
-            else f"**TASK: {title}**\n\n_{env.status}_"
+            else f"**定时任务: {title}**\n\n_{env.status}_"
         )
         opts = SendRichOpts(
             allowed_roots=self._roots(),
@@ -254,12 +254,12 @@ class TelegramTransport:
             )
             env.delivered = False
             env.delivery_error = type(exc).__name__
-            target = f"Chat {env.chat_id}"
+            target = f"聊天 {env.chat_id}"
             if env.topic_id:
-                target += f" / Topic {env.topic_id}"
+                target += f" / 话题 {env.topic_id}"
             fallback_text = (
-                f"**Cron delivery failed**\n\n"
-                f"Task **{title}** could not be delivered to {target}.\n\n"
+                f"**定时任务结果投递失败**\n\n"
+                f"任务 **{title}** 无法投递到 {target}。\n\n"
                 f"---\n{clean_result or env.status}"
             )
             fallback_id = self._bot._config.allowed_user_ids[0]
@@ -287,18 +287,18 @@ class TelegramTransport:
             )
             return
         text = (
-            f"**TASK: {title}**\n\n{clean_result}"
+            f"**定时任务: {title}**\n\n{clean_result}"
             if clean_result
-            else f"**TASK: {title}**\n\n_{env.status}_"
+            else f"**定时任务: {title}**\n\n_{env.status}_"
         )
         await self._bot.broadcast(text, SendRichOpts(allowed_roots=self._roots()))
 
     async def _broadcast_webhook_cron(self, env: Envelope) -> None:
         title = env.metadata.get("hook_title", "?")
         if env.result_text:
-            text = f"**WEBHOOK (CRON TASK): {title}**\n\n{env.result_text}"
+            text = f"**Webhook 定时任务: {title}**\n\n{env.result_text}"
         else:
-            text = f"**WEBHOOK (CRON TASK): {title}**\n\n_{env.status}_"
+            text = f"**Webhook 定时任务: {title}**\n\n_{env.status}_"
         await self._bot.broadcast(text, SendRichOpts(allowed_roots=self._roots()))
 
 

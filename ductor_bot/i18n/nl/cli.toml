@@ -1,6 +1,4 @@
-# Nederlandse CLI-strings (Rich-geformatteerd, terminaluitvoer).
-
-# -- Statuscommando ---------------------------------------------------------------
+# nl interface strings
 
 [status]
 running = "[bold green]Actief[/bold green]  pid={pid}  uptime: {uptime}"
@@ -13,17 +11,9 @@ errors_none = "Fouten:    [green]0[/green]"
 paths_header = "[bold]Paden:[/bold]"
 not_configured = "[bold yellow]Niet geconfigureerd.[/bold yellow]\n\nVoer [bold]ductor[/bold] uit om de setup-wizard te starten."
 
-# -- Configvalidatie ---------------------------------------------------------------
-
 [config]
 incomplete = "[bold yellow]Config is onvolledig. Voer [bold]ductor onboarding[/bold] uit.[/bold yellow]"
-matrix_no_homeserver = "[bold yellow]Matrix homeserver-URL is vereist.{hint}[/bold yellow]"
-matrix_no_user = "[bold yellow]Matrix user_id is vereist.{hint}[/bold yellow]"
-matrix_no_auth = "[bold yellow]Matrix wachtwoord of access_token is vereist.{hint}[/bold yellow]"
-matrix_no_target = "[bold yellow]Minstens één allowed_room of allowed_user is vereist.{hint}[/bold yellow]"
 onboarding_hint = " Voer [bold]ductor onboarding[/bold] uit om opnieuw te configureren."
-
-# -- Levenscyclus -----------------------------------------------------------------
 
 [lifecycle]
 stopping_docker = "[dim]Docker-container '{name}' wordt gestopt...[/dim]"
@@ -35,12 +25,7 @@ no_instance = "[dim]Geen actieve bot-instantie gevonden.[/dim]"
 
 [lifecycle.uninstall]
 title = "[bold red]ductor verwijderen[/bold red]"
-body = """\
-[bold red]Dit verwijdert ductor permanent van je systeem.[/bold red]\n
-  1. Actieve bot stoppen (indien actief)
-  2. Docker-container en image verwijderen (indien gebruikt)
-  3. Alle gegevens in ~/.ductor/ wissen
-  4. Het ductor-pakket verwijderen"""
+body = "[bold red]Dit verwijdert ductor permanent van je systeem.[/bold red]\n\n  1. Actieve bot stoppen (indien actief)\n  2. Docker-container en image verwijderen (indien gebruikt)\n  3. Alle gegevens in ~/.ductor/ wissen\n  4. Het ductor-pakket verwijderen"
 confirm = "Weet je zeker dat je alles wilt verwijderen?"
 cancelled = "[dim]Verwijdering geannuleerd.[/dim]"
 removing_image = "[dim]Docker-image '{image}' wordt verwijderd...[/dim]"
@@ -53,21 +38,13 @@ done_body = "[bold green]ductor is volledig verwijderd.[/bold green]\n\nBedankt 
 
 [lifecycle.upgrade]
 dev_title = "[bold yellow]Ontwikkelinstallatie[/bold yellow]"
-dev_body = """\
-[bold yellow]Draait vanuit broncode (bewerkbare installatie).[/bold yellow]\n
-Self-upgrade is niet beschikbaar.
-Update met [bold]git pull[/bold] in je projectmap."""
+dev_body = "[bold yellow]Draait vanuit broncode (bewerkbare installatie).[/bold yellow]\n\nSelf-upgrade is niet beschikbaar.\nUpdate met [bold]git pull[/bold] in je projectmap."
 title = "[bold cyan]ductor wordt bijgewerkt...[/bold cyan]"
-body = """\
-  1. Actieve bot netjes stoppen
-  2. Naar nieuwste versie bijwerken
-  3. Herstarten"""
+body = "1. Actieve bot netjes stoppen\n  2. Naar nieuwste versie bijwerken\n  3. Herstarten"
 upgrading = "[dim]Pakket wordt bijgewerkt...[/dim]"
 complete = "[green]Upgrade voltooid: {old} -> {new}[/green]"
 unchanged = "[bold yellow]Versie ongewijzigd na upgrade ({version}).[/bold yellow]\nAutomatische retry is geprobeerd, maar er kon geen nieuwe versie worden geverifieerd."
 restarting = "[dim]Herstarten...[/dim]"
-
-# -- Docker-commando's ------------------------------------------------------------
 
 [docker]
 config_not_found = "[bold red]Config niet gevonden. Voer eerst ductor uit.[/bold red]"
@@ -121,8 +98,6 @@ removed = "[green]Verwijderd:[/green] {name}"
 rebuild_hint = "[yellow]Voer 'ductor docker rebuild' uit om toe te passen.[/yellow]"
 dep_warning = "[yellow]Waarschuwing: {dependents} zijn afhankelijk van {name}.[/yellow]"
 
-# -- Dienstcommando's -------------------------------------------------------------
-
 [service]
 not_installed = "[dim]Dienst niet geïnstalleerd. Voer [bold]ductor service install[/bold] uit.[/dim]"
 not_running = "[dim]Dienst draait niet.[/dim]"
@@ -136,22 +111,7 @@ stop_failed = "[red]Stoppen mislukt: {error}[/red]"
 
 [service.install]
 title = "ductor achtergronddienst"
-body = """\
-[bold green]ductor draait nu als achtergronddienst.[/bold green]\n
-{detail}\n
-[bold]Handige commando's:[/bold]\n
-  [cyan]ductor service status[/cyan]     Controleren of het draait
-  [cyan]ductor service stop[/cyan]       Dienst stoppen
-  [cyan]ductor service logs[/cyan]       {logs_hint}
-  [cyan]ductor service uninstall[/cyan]  Dienst verwijderen"""
-
-[service.linux]
-no_systemd = "[bold red]systemd niet gevonden. Dienstinstallatie vereist Linux met systemd.[/bold red]"
-linger_warning = "[bold yellow]Linger moet ingeschakeld zijn zodat ductor blijft draaien na het uitloggen.[/bold yellow]"
-linger_enabled = "[green]Linger ingeschakeld.[/green]"
-linger_manual = "[yellow]Linger kon niet automatisch worden ingeschakeld.[/yellow]\nHandmatig uitvoeren: [bold]sudo loginctl enable-linger {user}[/bold]"
-start_failed = "[bold red]Dienst starten mislukt:[/bold red] {error}"
-detail = "Start bij het opstarten en herstart automatisch bij een crash."
+body = "[bold green]ductor draait nu als achtergronddienst.[/bold green]\n\n{detail}\n\n[bold]Handige commando's:[/bold]\n\n  [cyan]ductor service status[/cyan]     Controleren of het draait\n  [cyan]ductor service stop[/cyan]       Dienst stoppen\n  [cyan]ductor service logs[/cyan]       {logs_hint}\n  [cyan]ductor service uninstall[/cyan]  Dienst verwijderen"
 
 [service.macos]
 no_launchctl = "[bold red]launchctl niet gevonden. Dienstinstallatie vereist macOS.[/bold red]"
@@ -159,22 +119,6 @@ start_failed = "[bold red]Launch Agent kon niet worden geladen:[/bold red] {erro
 detail = "Start bij het inloggen en herstart bij een crash (10s vertraging)."
 unload_failed = "[red]Agent kon niet worden ontladen: {error}[/red]"
 not_loaded = "[red]Agent niet geladen. Probeer: [bold]ductor service install[/bold][/red]"
-
-[service.windows]
-admin_title = "[bold yellow]Administrator vereist[/bold yellow]"
-admin_body = """\
-[bold yellow]Beheerdersrechten vereist.[/bold yellow]\n
-Open een terminal als beheerder en probeer het opnieuw:\n
-  [bold]1.[/bold] Klik met de rechtermuisknop op CMD of PowerShell
-  [bold]2.[/bold] Kies [cyan]'Als administrator uitvoeren'[/cyan]
-  [bold]3.[/bold] Voer uit: [cyan]ductor service install[/cyan]"""
-no_scheduler = "[bold red]Taakplanner niet beschikbaar. Dienstinstallatie vereist Windows.[/bold red]"
-no_pythonw = "[dim]Opmerking: pythonw.exe niet gevonden. Een consolevenster kan zichtbaar zijn.[/dim]"
-create_failed = "[bold red]Geplande taak kon niet worden aangemaakt:[/bold red] {error}"
-start_failed = "[bold red]Taak aangemaakt maar starten mislukt:[/bold red] {error}"
-remove_failed = "[red]Taak kon niet worden verwijderd: {error}[/red]"
-detail = "Start 10s na het inloggen en herstart bij een crash (maximaal 3 pogingen, 1 min tussentijd)."
-query_failed = "[red]Taakstatus kon niet worden opgevraagd: {error}[/red]"
 
 [service.logs]
 no_logs = "[dim]Geen logbestanden gevonden.[/dim]"
@@ -185,8 +129,6 @@ not_installed = "[dim]Dienst niet geïnstalleerd.[/dim]"
 streaming = "[dim]Logs worden getoond (Ctrl+C om te stoppen)...[/dim]"
 no_journalctl = "[bold red]journalctl niet gevonden.[/bold red]"
 
-# -- API-commando's ---------------------------------------------------------------
-
 [api]
 title = "[bold]API-commando's[/bold] [dim](bèta)[/dim]"
 status_not_configured = "[dim]niet geconfigureerd[/dim]"
@@ -195,26 +137,14 @@ status_disabled = "[dim]uitgeschakeld[/dim]"
 
 [api.missing_dep]
 title = "[bold]Ontbrekende afhankelijkheid[/bold]"
-body = """\
-[bold yellow]PyNaCl is vereist voor de API-server (E2E-versleuteling).[/bold yellow]\n
-Installeer het met:\n
-  [bold]{hint}[/bold]\n
-Voer daarna [bold]ductor api enable[/bold] opnieuw uit."""
+body = "[bold yellow]PyNaCl is vereist voor de API-server (E2E-versleuteling).[/bold yellow]\n\nInstalleer het met:\n\n  [bold]{hint}[/bold]\n\nVoer daarna [bold]ductor api enable[/bold] opnieuw uit."
 
 [api.enabled]
 title = "[bold]API Server[/bold] [dim](bèta)[/dim]"
-body = """\
-[bold green]API-server ingeschakeld.[/bold green]\n
-  Host:   [cyan]{host}[/cyan]
-  Poort:  [cyan]{port}[/cyan]
-  Token:  [cyan]{token}[/cyan]\n
-[dim]Herstart de bot om de API-server te starten.[/dim]
-[dim]Ontworpen voor gebruik met Tailscale of andere privénetwerken.[/dim]"""
+body = "[bold green]API-server ingeschakeld.[/bold green]\n\n  Host:   [cyan]{host}[/cyan]\n  Poort:  [cyan]{port}[/cyan]\n  Token:  [cyan]{token}[/cyan]\n\n[dim]Herstart de bot om de API-server te starten.[/dim]\n[dim]Ontworpen voor gebruik met Tailscale of andere privénetwerken.[/dim]"
 
 [api.disabled]
 status = "API-server: [dim]uitgeschakeld[/dim]"
-
-# -- Agentcommando's --------------------------------------------------------------
 
 [agents]
 col_agent = "Agent"
@@ -249,8 +179,6 @@ confirm = "Agent '{name}' verwijderen? (Workspace-gegevens worden niet gewist.)"
 done = "[green]Agent '{name}' verwijderd uit agents.json.[/green]"
 data_hint = "[dim]Workspace-gegevens blijven staan op {path}[/dim]"
 
-# -- Extra's installeren ----------------------------------------------------------
-
 [install]
 already = "[green]✓[/green] {description} is al geïnstalleerd."
 installing = "{description} wordt geïnstalleerd..."
@@ -262,8 +190,6 @@ col_description = "Beschrijving"
 col_status = "Status"
 status_installed = "[green]geïnstalleerd[/green]"
 status_not_installed = "[dim]niet geïnstalleerd[/dim]"
-
-# -- Helptabel --------------------------------------------------------------------
 
 [help]
 col_command = "Commando"
@@ -280,7 +206,7 @@ service = "Dienstbeheer (status/stop/logs/...)"
 agents = "Sub-agentbeheer (list/add/remove)"
 docker = "Dockerbeheer (rebuild/enable/disable)"
 api = "API-serverbeheer (enable/disable) [bèta]"
-install = "Optionele extra's installeren (matrix, api)"
+install = "Optionele extra's installeren (api)"
 status = "Botstatus, paden en agents tonen"
 help = "Dit bericht tonen"
 verbose = "Uitgebreide loguitvoer"

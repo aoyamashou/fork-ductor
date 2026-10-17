@@ -1,6 +1,6 @@
 # Media File Tools
 
-Scripts for processing files received via any transport (Telegram, Matrix, API).
+Scripts for processing files received via any transport (Telegram, API).
 
 ## Common Commands
 

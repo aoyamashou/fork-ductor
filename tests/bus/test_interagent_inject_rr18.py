@@ -191,27 +191,6 @@ async def test_no_injection_prompt_skips_injection() -> None:
     assert env.result_text == result.result_text  # raw text unchanged
 
 
-async def test_matrix_transport_reaches_injector_and_delivery() -> None:
-    """Matrix async results must inject into mx session and deliver to mx transport."""
-    bus = MessageBus()
-    injector = AsyncMock()
-    injector.inject_prompt = AsyncMock(return_value="processed for matrix")
-    mx = _mock_transport("mx")
-    tg = _mock_transport("tg")
-    bus.set_injector(injector)
-    bus.register_transport(tg)
-    bus.register_transport(mx)
-
-    result = _FakeIAResult(chat_id=555)
-    prompt = _build_injection_prompt(result)
-    env = from_interagent_result(result, chat_id=100, injection_prompt=prompt, transport="mx")
-
-    await bus.submit(env)
-
-    injector.inject_prompt.assert_awaited_once()
-    assert injector.inject_prompt.call_args.kwargs["transport"] == "mx"
-    mx.deliver.assert_awaited_once_with(env)
-    tg.deliver.assert_not_awaited()
 
 
 # -- Pattern 4: multiple concurrent tasks, each injected independently ---------

@@ -1,55 +1,7 @@
-# security/
+# 安全边界
 
-Input and file-path safety utilities.
+主要代码：`ductor_bot/security/`。
 
-## Files
+安全模块负责提示词与输入校验。Telegram 用户和群组白名单控制消息入口；文件路径、Webhook Token 和 API 认证分别由对应模块验证。
 
-- `content.py`: suspicious prompt-pattern detection.
-- `paths.py`: file path validation against allowed roots.
-
-## Public API
-
-- `detect_suspicious_patterns(text) -> list[str]`
-- `validate_file_path(path, allowed_roots) -> Path`
-- `is_path_safe(path, allowed_roots) -> bool`
-
-## Suspicious Pattern Detection
-
-`detect_suspicious_patterns()` returns matched pattern names such as:
-
-- `instruction_override`
-- `role_hijack`
-- `fake_system_prompt`
-- `special_token`
-- `llama_markers`
-- `anthropic_markers`
-- `internal_file_ref`
-- `tool_injection`
-- `cli_flag_injection`
-- `file_tag_injection`
-
-Implementation details:
-
-- folds selected fullwidth characters to ASCII before matching (`_fold_fullwidth`).
-- returns matches only; does not block by itself.
-
-Current use in orchestrator: log warning only.
-
-## Path Validation
-
-`validate_file_path()`:
-
-1. reject null bytes,
-2. reject control characters (newline `\\n` is explicitly allowed),
-3. resolve to absolute path,
-4. require containment in one of `allowed_roots` via `is_relative_to`.
-
-Violation raises `PathValidationError`.
-
-`is_path_safe()` wraps this as a non-throwing boolean check.
-
-Current call sites:
-
-- Telegram file send path (`messenger/telegram/sender.py`)
-- API file download endpoint (`api/server.py`)
-- file-browser directory navigation guard (`messenger/telegram/file_browser.py`)
+相关操作与配置见 [配置说明](../config.md)、[系统概览](../system_overview.md) 和 [Telegram 命令帮助](../help.md)。
